@@ -6,6 +6,11 @@
 
 "use strict";
 
+import "./lib/box.min.js";
+import "./lib/box.min.css";
+import "./CSS_Viewer.js";
+import "./RegExp.Color.js";
+
 (() => {
     const StyleViewer = {
         
