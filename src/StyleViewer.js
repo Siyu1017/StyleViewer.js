@@ -8,6 +8,9 @@
 
 (() => {
     const StyleViewer = {
-        
+        target: document.body
     };
+    StyleViewer.init = (target, config) => {
+
+    }
 })()
