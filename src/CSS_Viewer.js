@@ -345,45 +345,6 @@
             }
         }
 
-        /*
-
-        var _drag = false;
-
-        var _origin_x = 0;
-        var _origin_y = 0;
-
-        _("._css_viewer_info_stylesheets_drag").addEventListener("mousedown", (e) => {
-            _drag = true;
-            _origin_x = e.pageX;
-            _origin_y = e.pageY;
-            model.classList.add("drag");
-        });
-
-        window.addEventListener("mousemove", (e) => {
-            if (_drag == false) return;
-            var M_x = e.pageX,
-                M_y = e.pageY;
-            var T = model,
-                T_x = getPosition(model).x,
-                T_y = getPosition(model).y;
-            model.style = `left: ${T_x + (M_x - _origin_x)}px; top: ${T_y + (M_y - _origin_y)}px; position: absolute;`;
-            _origin_x = e.pageX;
-            _origin_y = e.pageY;
-        });
-
-        window.addEventListener("mouseup", () => {
-            _drag = false;
-            model.classList.remove("drag");
-        });
-
-        window.addEventListener("blur", () => {
-            _drag = false;
-            model.classList.remove("drag");
-        });
-
-        */
-
-
         function select_mode_true(t) {
             info.classList.add("_css_viewer_info_hidden");
             highlight.classList.add("_css_viewer_highlight_hidden");
