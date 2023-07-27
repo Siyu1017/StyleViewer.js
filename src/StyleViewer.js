@@ -73,8 +73,6 @@ const getStyle = (element) => {
                 console.warn("Warn : Uncaught exception.\nDetails :", e);
             };
         }
-    } else {
-        
     }
     return RS;
 }
