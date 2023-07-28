@@ -1,7 +1,7 @@
 /**
  * Code by Wetrain (c) 2023
  * All rights reserved.
- * StyleViewer.js v1.0.0
+ * StyleViewer.js v1.0.1
  */
 
 "use strict";
