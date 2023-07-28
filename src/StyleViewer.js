@@ -39,6 +39,24 @@
         return target.appendChild(element);
     }
 
+    function popupWorker(x, y, e) {
+        var res = {
+            x: x,
+            y: y
+        }
+        if (x + e.offsetWidth > document.documentElement.scrollWidth) {
+            res.x = x - e.offsetWidth;
+        } 
+        if (y + e.offsetHeight > document.documentElement.scrollHeight || y + e.offsetHeight > window.innerHeight) {
+            if (y - document.documentElement.scrollTop < 0) {
+                res.y = document.documentElement.scrollTop;
+            } else {
+               res.y = y - e.offsetHeight; 
+            }
+        }
+        return res; 
+    }
+
     function getPosition(element) {
         function offset(el) {
             var rect = el.getBoundingClientRect(),
@@ -88,8 +106,9 @@
             })
             StyleViewer.popupElement.innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
         });
-        StyleViewer.popupElement.style.left = detail.pageX + "px";
-        StyleViewer.popupElement.style.top = detail.pageY + "px";
+        var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
+        StyleViewer.popupElement.style.left = pos.x + "px";
+        StyleViewer.popupElement.style.top = pos.y + "px";
     }
 
     function getStyle(a, c) {
