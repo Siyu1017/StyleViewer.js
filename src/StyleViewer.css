@@ -14,6 +14,7 @@
 }
 
 .svjs-popup {
+    color: #000;
     z-index: 99999999;
     position: absolute;
     display: none;
