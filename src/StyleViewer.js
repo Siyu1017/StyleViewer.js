@@ -1,7 +1,7 @@
 /**
  * Code by Wetrain (c) 2023
  * All rights reserved.
- * StyleViewer.js v0.0.1-alpha
+ * StyleViewer.js v1.0.0
  */
 
 "use strict";
@@ -255,20 +255,22 @@
         return arr;
     }
 
-    // 禁止 StyleViewer 對字串中的選擇器作用
-    StyleViewer.filterByString = (selectors) => {
-
-    }
-
-    // 禁止 StyleViewer 對陣列中的選擇器作用
-    StyleViewer.filterByArray = (selectors) => {
-
-    }
-
-    // 刪除過濾器
-    StyleViewer.removeFilter = (filters) => {
-
-    }
+/************************* 未完成 *************************/
+/****/    // 禁止 StyleViewer 對字串中的選擇器作用
+/****/    StyleViewer.filterByString = (selectors) => {
+/****/
+/****/    }
+/****/
+/****/    // 禁止 StyleViewer 對陣列中的選擇器作用
+/****/    StyleViewer.filterByArray = (selectors) => {
+/****/
+/****/    }
+/****/
+/****/    // 刪除過濾器
+/****/    StyleViewer.removeFilter = (filters) => {
+/****/
+/****/    }
+/**********************************************************/
 
     window.onresize = () => {
         StyleViewer.highlightElement.style.width = 0 + "px";
