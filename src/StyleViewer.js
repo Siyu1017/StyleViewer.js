@@ -5,7 +5,7 @@
  */
 
 "use strict";
-
+ 
 (() => {
     const hash = {
         highlight: Hash(24, "ABCDEFGHIJKLMNOPQRSTUVWXYZ_-_abcdefghijklmnopqrstuvwxyz"),
