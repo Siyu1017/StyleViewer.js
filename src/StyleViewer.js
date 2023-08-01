@@ -43,11 +43,7 @@ import "./lib/box.min.css";
             y: y
         }
         if (x + e.offsetWidth > document.documentElement.scrollWidth) {
-            if (x - e.offsetWidth < 0) {
-res.x = document.documentElement.scrollWidth - e.offsetWidth;
-            } else {
-                res.x = x - e.offsetWidth;
-            } 
+            res.x = x - e.offsetWidth;
         } 
         if (y + e.offsetHeight > document.documentElement.scrollHeight || y + e.offsetHeight > window.innerHeight) {
             if (y - document.documentElement.scrollTop < 0) {
