@@ -43,16 +43,22 @@ import "./lib/box.min.css";
             y: y
         }
         if (x + e.offsetWidth > document.documentElement.scrollWidth) {
-            res.x = x - e.offsetWidth;
-        } 
+            if (x - e.offsetWidth < 0) {
+                res.x = document.documentElement.scrollWidth - e.offsetWidth;
+            } else {
+                res.x = x - e.offsetWidth;
+            }
+        }
         if (y + e.offsetHeight > document.documentElement.scrollHeight || y + e.offsetHeight > window.innerHeight) {
             if (y - document.documentElement.scrollTop < 0) {
                 res.y = document.documentElement.scrollTop;
+            } else if (y - e.offsetHeight < document.documentElement.scrollTop) {
+                res.y = document.documentElement.scrollTop;
             } else {
-               res.y = y - e.offsetHeight; 
+                res.y = y - e.offsetHeight;
             }
         }
-        return res; 
+        return res;
     }
 
     function getPosition(element) {
@@ -275,19 +281,22 @@ import "./lib/box.min.css";
 /************************* 未完成 *************************/
 /****/    // 禁止 StyleViewer 對字串中的選擇器作用
 /****/    StyleViewer.filterByString = (selectors) => {
-/****/
-/****/    }
+        /****/
+        /****/
+}
 /****/
 /****/    // 禁止 StyleViewer 對陣列中的選擇器作用
 /****/    StyleViewer.filterByArray = (selectors) => {
-/****/
-/****/    }
+        /****/
+        /****/
+}
 /****/
 /****/    // 刪除過濾器
 /****/    StyleViewer.removeFilter = (filters) => {
-/****/
-/****/    }
-/**********************************************************/
+        /****/
+        /****/
+}
+    /**********************************************************/
 
     window.onresize = () => {
         StyleViewer.highlightElement.style.width = 0 + "px";
