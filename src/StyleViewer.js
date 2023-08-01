@@ -158,7 +158,7 @@ import "./lib/box.min.css";
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
-        StyleViewer.popupElement.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.floor(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.floor(size.height * 100) / 100}</span></span></div>`;
+        StyleViewer.popupElement.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
         getAllStyle(element).forEach(s => {
             var temp = "";
             s.content.forEach(j => {
