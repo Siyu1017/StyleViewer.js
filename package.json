@@ -8,6 +8,8 @@
     "build": "webpack --mode production"
   },
   "devDependencies": {
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
     "webpack-cli": "^5.1.4"
   }
 }
