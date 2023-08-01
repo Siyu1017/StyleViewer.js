@@ -379,8 +379,7 @@
         }
 
         return {
-            toggle: toggle,
-            version: "1.0.0"
+            toggle: toggle
         };
     };
 
