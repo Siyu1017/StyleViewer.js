@@ -22,6 +22,62 @@ import "./lib/box.min.css";
         filters: ["StyleViewer", []],
     };
 
+    const isNumeric = n => !!Number(n);
+
+    function getBoxModelData(options) {
+        const element = options;
+        const computedStyle = window.getComputedStyle(element)
+
+        function getBoxModelValue(type) {
+            let keys = ["top", "left", "right", "bottom"]
+            if (type !== "position") {
+                for (let i = 0; i < keys.length; i++) {
+                    keys[i] = `${type}-${keys[i]}`
+                }
+            }
+            if (type === "border") {
+                for (let i = 0; i < keys.length; i++) {
+                    keys[i] = `${keys[i]}-width`
+                }
+            }
+            return {
+                top: boxModelValue(computedStyle[keys[0]], type),
+                left: boxModelValue(computedStyle[keys[1]], type),
+                right: boxModelValue(computedStyle[keys[2]], type),
+                bottom: boxModelValue(computedStyle[keys[3]], type)
+            }
+        }
+
+        const boxModel = {
+            margin: getBoxModelValue("margin"),
+            border: getBoxModelValue("border"),
+            padding: getBoxModelValue("padding"),
+            content: {
+                width: boxModelValue(computedStyle["width"], "content"),
+                height: boxModelValue(computedStyle["height"], "content")
+            }
+        }
+
+        if (computedStyle["position"] !== "static") {
+            boxModel.position = getBoxModelValue("position")
+        }
+
+        return boxModel
+    }
+
+    function boxModelValue(val, type) {
+        if (isNumeric(val)) return val;
+
+        if (!typeof val == "string") return type == "content" ? 0 : 0
+
+        const ret = Number(val.replace('px', ''));
+        if (isNaN(ret)) return val
+
+        if (type === "position") return ret;
+
+        return ret === 0 ? type == "content" ? 0 : 0 : ret
+    }
+
     function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
 
     function Element(tagName, classList, attributes, target) {
@@ -102,7 +158,7 @@ import "./lib/box.min.css";
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
-        StyleViewer.popupElement.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${roundTo(size.width, 2)}</span><span class="_css_viewer_info_height">${roundTo(size.height, 2)}</span></span></div>`;
+        StyleViewer.popupElement.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.floor(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.floor(size.height * 100) / 100}</span></span></div>`;
         getAllStyle(element).forEach(s => {
             var temp = "";
             s.content.forEach(j => {
