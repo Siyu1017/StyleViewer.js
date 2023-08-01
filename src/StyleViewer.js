@@ -133,8 +133,8 @@ import "./lib/box.min.css";
             y: element.getClientRects()[0].top
         } : getPosition(element);
         var size = {
-            width: element.nodeName.toLowerCase() == "path" ? element.getClientRects()[0].width : element.scrollWidth == 0 ? element.offsetWidth : element.scrollWidth,
-            height: element.nodeName.toLowerCase() == "path" ? element.getClientRects()[0].height : element.scrollHeight == 0 ? element.offsetHeight : element.scrollHeight
+            width: element.getClientRects()[0].width,
+            height: element.getClientRects()[0].height
         }
         StyleViewer.highlightElement.style.width = size.width + "px";
         StyleViewer.highlightElement.style.height = size.height + "px";
