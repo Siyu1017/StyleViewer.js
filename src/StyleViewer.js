@@ -152,8 +152,8 @@ import "./lib/box.min.css";
         var element = e;
 
         var size = {
-            width: element.nodeName.toLowerCase() == "path" ? element.getClientRects()[0].width : element.scrollWidth == 0 ? element.offsetWidth : element.scrollWidth,
-            height: element.nodeName.toLowerCase() == "path" ? element.getClientRects()[0].height : element.scrollHeight == 0 ? element.offsetHeight : element.scrollHeight
+            width: element.getClientRects()[0].width,
+            height: element.getClientRects()[0].height
         }
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
