@@ -6,6 +6,10 @@
 
 "use strict";
 
+import "./StyleViewer.css";
+import "./lib/box.min.js";
+import "./lib/box.min.css";
+
 (() => {
     const hash = {
         highlight: Hash(24, "ABCDEFGHIJKLMNOPQRSTUVWXYZ_-_abcdefghijklmnopqrstuvwxyz"),
