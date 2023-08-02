@@ -166,7 +166,7 @@ import "./lib/box.min.css";
             })
             StyleViewer.popupElement.innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
         });
-        element.innerHTML += box(StyleViewer.popupElement).draw();
+        StyleViewer.popupElement.innerHTML += box(element).draw();
         var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
         StyleViewer.popupElement.style.left = pos.x + "px";
         StyleViewer.popupElement.style.top = pos.y + "px";
