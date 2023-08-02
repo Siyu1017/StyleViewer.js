@@ -11,5 +11,9 @@
 
 💡按下 Alt 即可阻止 Popup 移動
 
+## 更新內容
+- 色碼判別
+- 元素 Box Model
+
 ## 修復內容
-- popup 位置超出視窗範圍<!--details>at `StyleViewer.js:91:8`<br>at `StyleViewer.js:92:8`</details-->
+- 按下 Alt 並讓網頁失焦後 Popup 沒有反應

@@ -1,7 +1,7 @@
 /**
  * Code by Wetrain (c) 2023
  * All rights reserved.
- * StyleViewer.js v1.0.1
+ * StyleViewer.js v1.1.0
  */
 
 "use strict";
@@ -76,6 +76,35 @@ import "./lib/box.min.css";
         if (type === "position") return ret;
 
         return ret === 0 ? type == "content" ? 0 : 0 : ret
+    }
+
+    const colorCodeRegex = /hsla?\(\d{1,3},\s*\d{1,3}%,\s*\d{1,3}%(,\s*0?\.?\d{1,2})?\)|#(?:[0-9a-fA-F]{3}){1,2}|(rgb|hsl)a?\((\d{1,3}%?),\s*(\d{1,3}%?),\s*(\d{1,3}%?)(,\s*0?\.?\d*)?\)/g;
+
+    const color_text_regex = /^(?:ALICEBLUE|ANTIQUEWHITE|AQUA|AQUAMARINE|AZURE|BEIGE|BISQUE|BLACK|BLANCHEDALMOND|BLUE|BLUEVIOLET|BROWN|BURLYWOOD|CADETBLUE|CHARTREUSE|CHOCOLATE|CORAL|CORNFLOWERBLUE|CORNSILK|CRIMSON|CYAN|DARKBLUE|DARKCYAN|DARKGOLDENROD|DARKGRAY|DARKGREEN|DARKKHAKI|DARKMAGENTA|DARKOLIVEGREEN|DARKORANGE|DARKORCHID|DARKRED|DARKSALMON|DARKSEAGREEN|DARKSLATEBLUE|DARKSLATEGRAY|DARKTURQUOISE|DARKVIOLET|DEEPPINK|DEEPSKYBLUE|DIMGRAY|DODGERBLUE|FLORALWHITE|FORESTGREEN|FUCHSIA|GAINSBORO|GHOSTWHITE|GOLD|GOLDENROD|GRAY|GREEN|GREENYELLOW|HONEYDEW|HOTPINK|INDIANRED|INDIGO|IVORY|KHAKI|LAVENDER|LAVENDERBLUSH|LAWNGREEN|LEMONCHIFFON|LIGHTBLUE|LIGHTCORAL|LIGHTCYAN|LIGHTGOLDENRODYELLOW|LIGHTGRAY|LIGHTGREEN|LIGHTPINK|LIGHTSALMON|LIGHTSEAGREEN|LIGHTSKYBLUE|LIGHTSLATEGRAY|LIGHTSTEELBLUE|LIGHTYELLOW|LIME|LIMEGREEN|LINEN|MAGENTA|MAROON|MEDIUMAQUAMARINE|MEDIUMBLUE|MEDIUMORCHID|MEDIUMPURPLE|MEDIUMSEAGREEN|MEDIUMSLATEBLUE|MEDIUMSPRINGGREEN|MEDIUMTURQUOISE|MEDIUMVIOLETRED|MIDNIGHTBLUE|MINTCREAM|MISTYROSE|MOCCASIN|NAVAJOWHITE|NAVY|OLDLACE|OLIVE|OLIVEDRAB|ORANGE|ORANGERED|ORCHID|PALEGOLDENROD|PALEGREEN|PALETURQUOISE|PALEVIOLETRED|PAPAYAWHIP|PEACHPUFF|PERU|PINK|PLUM|POWDERBLUE|PURPLE|REBECCAPURPLE|RED|ROSYBROWN|ROYALBLUE|SADDLEBROWN|SALMON|SANDYBROWN|SEAGREEN|SEASHELL|SIENNA|SILVER|SKYBLUE|SLATEBLUE|SLATEGRAY|SNOW|SPRINGGREEN|STEELBLUE|TAN|TEAL|THISTLE|TOMATO|TURQUOISE|VIOLET|WHEAT|WHITE|WHITESMOKE|YELLOW|YELLOWGREEN)$/gi;
+
+    function replaceCssVars(str, element) {
+        return str.replace(/var\((--.*?)\)/g, (match, p1) => {
+            return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}` : match || match;
+        });
+    }
+
+    function is_color(str) {
+        return colorCodeRegex.test(str) == true || color_text_regex.test(str.toUpperCase()) == true;
+    }
+
+    function Color_regex(str, element) {
+        var matches = str.replace(colorCodeRegex, match => {
+            return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
+        });
+
+        matches = matches.replace(color_text_regex, match => {
+            return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
+
+        })
+
+        matches = replaceCssVars(matches, element);
+
+        return matches ? matches : str;
     }
 
     function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
@@ -158,15 +187,24 @@ import "./lib/box.min.css";
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
-        StyleViewer.popupElement.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
-        getAllStyle(element).forEach(s => {
-            var temp = "";
-            s.content.forEach(j => {
-                temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${j.value};</div>`
-            })
-            StyleViewer.popupElement.innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
-        });
-        StyleViewer.popupElement.innerHTML += box(element).draw();
+        StyleViewer.popupElement.innerHTML = "";
+        (function(){
+            var a = document.createElement("div");
+            a.className = "svjs-style-content";
+            StyleViewer.popupElement.appendChild(a);
+            a.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
+            getAllStyle(element).forEach(s => {
+                var temp = "";
+                s.content.forEach(j => {
+                    temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
+                })
+                a.innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
+            });
+        })();
+        var b = document.createElement("div");
+        b.className = "svjs-box";
+        StyleViewer.popupElement.appendChild(b);
+        box(element, b).draw();
         var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
         StyleViewer.popupElement.style.left = pos.x + "px";
         StyleViewer.popupElement.style.top = pos.y + "px";
@@ -277,6 +315,10 @@ import "./lib/box.min.css";
             }
         })
         window.addEventListener("keyup", (e) => {
+            StyleViewer.popupElement.classList.remove("svjs-popup-control");
+            control = false;
+        })
+        window.addEventListener("blur", () => {
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
             control = false;
         })
