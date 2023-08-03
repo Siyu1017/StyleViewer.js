@@ -1,4 +1,6 @@
 const path = require('path');
+const TerserWebpackPlugin = require("terser-webpack-plugin");
+
 module.exports = {
     entry: './src/StyleViewer.js',
     module: {
@@ -19,5 +21,9 @@ module.exports = {
     output: {
         filename: 'StyleViewer.min.js',
         path: path.resolve(__dirname, 'dist'),
-    }
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserWebpackPlugin()],
+    },
 };
