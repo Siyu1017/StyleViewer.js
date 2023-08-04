@@ -223,6 +223,11 @@ import "./lib/box.min.css";
             }
         ];
         var elementStyle = element.getAttribute("style");
+        if (element.getAttribute("style") != null && element.getAttribute("style") != "") {
+            if (element.getAttribute("style").trim().length > 0) {
+                elementStyle = element.getAttribute("style").replaceAll(/\/\*[\s\S]*?\*\//gi, "");
+            }
+        }
         if (elementStyle !== null && elementStyle.trim() !== "") {
             var content = RS[0].content;
             if (elementStyle.split(":")[1].trim() !== "") {
