@@ -22,62 +22,6 @@ import "./lib/box.min.css";
         filters: ["StyleViewer", []],
     };
 
-    const isNumeric = n => !!Number(n);
-
-    function getBoxModelData(options) {
-        const element = options;
-        const computedStyle = window.getComputedStyle(element)
-
-        function getBoxModelValue(type) {
-            let keys = ["top", "left", "right", "bottom"]
-            if (type !== "position") {
-                for (let i = 0; i < keys.length; i++) {
-                    keys[i] = `${type}-${keys[i]}`
-                }
-            }
-            if (type === "border") {
-                for (let i = 0; i < keys.length; i++) {
-                    keys[i] = `${keys[i]}-width`
-                }
-            }
-            return {
-                top: boxModelValue(computedStyle[keys[0]], type),
-                left: boxModelValue(computedStyle[keys[1]], type),
-                right: boxModelValue(computedStyle[keys[2]], type),
-                bottom: boxModelValue(computedStyle[keys[3]], type)
-            }
-        }
-
-        const boxModel = {
-            margin: getBoxModelValue("margin"),
-            border: getBoxModelValue("border"),
-            padding: getBoxModelValue("padding"),
-            content: {
-                width: boxModelValue(computedStyle["width"], "content"),
-                height: boxModelValue(computedStyle["height"], "content")
-            }
-        }
-
-        if (computedStyle["position"] !== "static") {
-            boxModel.position = getBoxModelValue("position")
-        }
-
-        return boxModel
-    }
-
-    function boxModelValue(val, type) {
-        if (isNumeric(val)) return val;
-
-        if (!typeof val == "string") return type == "content" ? 0 : 0
-
-        const ret = Number(val.replace('px', ''));
-        if (isNaN(ret)) return val
-
-        if (type === "position") return ret;
-
-        return ret === 0 ? type == "content" ? 0 : 0 : ret
-    }
-
     const colorCodeRegex = /hsla?\(\d{1,3},\s*\d{1,3}%,\s*\d{1,3}%(,\s*0?\.?\d{1,2})?\)|#(?:[0-9a-fA-F]{3}){1,2}|(rgb|hsl)a?\((\d{1,3}%?),\s*(\d{1,3}%?),\s*(\d{1,3}%?)(,\s*0?\.?\d*)?\)/g;
 
     const color_text_regex = /^(?:ALICEBLUE|ANTIQUEWHITE|AQUA|AQUAMARINE|AZURE|BEIGE|BISQUE|BLACK|BLANCHEDALMOND|BLUE|BLUEVIOLET|BROWN|BURLYWOOD|CADETBLUE|CHARTREUSE|CHOCOLATE|CORAL|CORNFLOWERBLUE|CORNSILK|CRIMSON|CYAN|DARKBLUE|DARKCYAN|DARKGOLDENROD|DARKGRAY|DARKGREEN|DARKKHAKI|DARKMAGENTA|DARKOLIVEGREEN|DARKORANGE|DARKORCHID|DARKRED|DARKSALMON|DARKSEAGREEN|DARKSLATEBLUE|DARKSLATEGRAY|DARKTURQUOISE|DARKVIOLET|DEEPPINK|DEEPSKYBLUE|DIMGRAY|DODGERBLUE|FLORALWHITE|FORESTGREEN|FUCHSIA|GAINSBORO|GHOSTWHITE|GOLD|GOLDENROD|GRAY|GREEN|GREENYELLOW|HONEYDEW|HOTPINK|INDIANRED|INDIGO|IVORY|KHAKI|LAVENDER|LAVENDERBLUSH|LAWNGREEN|LEMONCHIFFON|LIGHTBLUE|LIGHTCORAL|LIGHTCYAN|LIGHTGOLDENRODYELLOW|LIGHTGRAY|LIGHTGREEN|LIGHTPINK|LIGHTSALMON|LIGHTSEAGREEN|LIGHTSKYBLUE|LIGHTSLATEGRAY|LIGHTSTEELBLUE|LIGHTYELLOW|LIME|LIMEGREEN|LINEN|MAGENTA|MAROON|MEDIUMAQUAMARINE|MEDIUMBLUE|MEDIUMORCHID|MEDIUMPURPLE|MEDIUMSEAGREEN|MEDIUMSLATEBLUE|MEDIUMSPRINGGREEN|MEDIUMTURQUOISE|MEDIUMVIOLETRED|MIDNIGHTBLUE|MINTCREAM|MISTYROSE|MOCCASIN|NAVAJOWHITE|NAVY|OLDLACE|OLIVE|OLIVEDRAB|ORANGE|ORANGERED|ORCHID|PALEGOLDENROD|PALEGREEN|PALETURQUOISE|PALEVIOLETRED|PAPAYAWHIP|PEACHPUFF|PERU|PINK|PLUM|POWDERBLUE|PURPLE|REBECCAPURPLE|RED|ROSYBROWN|ROYALBLUE|SADDLEBROWN|SALMON|SANDYBROWN|SEAGREEN|SEASHELL|SIENNA|SILVER|SKYBLUE|SLATEBLUE|SLATEGRAY|SNOW|SPRINGGREEN|STEELBLUE|TAN|TEAL|THISTLE|TOMATO|TURQUOISE|VIOLET|WHEAT|WHITE|WHITESMOKE|YELLOW|YELLOWGREEN)$/gi;
@@ -156,6 +100,12 @@ import "./lib/box.min.css";
         return { x: offset(element).left, y: offset(element).top };
     }
 
+    var hlel = {
+        padding: {},
+        border: {},
+        margin: {}
+    }
+
     function highlightElement(element) {
         var position = element.nodeName.toLowerCase() == "path" ? {
             x: element.getClientRects()[0].left,
@@ -165,10 +115,45 @@ import "./lib/box.min.css";
             width: element.getClientRects()[0].width,
             height: element.getClientRects()[0].height
         }
+        var hlcolors = {
+            content: 'rgba(111, 168, 220, .66)',
+            padding: 'rgba(147, 196, 125, .55)',
+            border: 'rgba(255, 229, 153, .66)',
+            margin: 'rgba(246, 178, 107, .66)'
+        }
+
         StyleViewer.highlightElement.style.width = size.width + "px";
         StyleViewer.highlightElement.style.height = size.height + "px";
         StyleViewer.highlightElement.style.top = position.y + "px";
         StyleViewer.highlightElement.style.left = position.x + "px";
+
+        const fillWorker = (e, w, h) => {
+            var t = e.top,
+                r = e.right,
+                b = e.bottom,
+                l = e.left
+            return [
+                [t, l, 0, 0],
+                [t, w, l, 0],
+                [t, r, l + w, 0],
+                [h, l, 0, t],
+                [h, r, l + w, t],
+                [b, l, 0, t + h],
+                [b, w, l, t + h],
+                [b, r, l + w, t + h]
+            ]
+        }
+        var sizes = {
+            content: box(element).data.content,
+            padding: box(element).data.padding,
+            border: box(element).data.border,
+            margin: box(element).data.margin
+        }
+        for (let i = 0; i < Object.values(sizes).length; i++) {
+            for (let j = 0; j < Object.values(sizes)[i].length; j++) {
+                sizes[Object.keys(sizes)[i]][Object.keys(sizes)[i][j]] = sizes[Object.keys(sizes)[i]][Object.keys(sizes)[i][j]] == "‒" ? 0 : sizes[Object.keys(sizes)[i]][Object.keys(sizes)[i][j]];
+            }
+        }
     }
 
     function setPopup(d, e) {
@@ -188,7 +173,7 @@ import "./lib/box.min.css";
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
         StyleViewer.popupElement.innerHTML = "";
-        (function(){
+        (function () {
             var a = document.createElement("div");
             a.className = "svjs-style-content";
             StyleViewer.popupElement.appendChild(a);
@@ -387,19 +372,19 @@ import "./lib/box.min.css";
 /****/    StyleViewer.filterByString = (selectors) => {
         /****/
         /****/
-}
+    }
 /****/
 /****/    // 禁止 StyleViewer 對陣列中的選擇器作用
 /****/    StyleViewer.filterByArray = (selectors) => {
         /****/
         /****/
-}
+    }
 /****/
 /****/    // 刪除過濾器
 /****/    StyleViewer.removeFilter = (filters) => {
         /****/
         /****/
-}
+    }
     /**********************************************************/
 
     window.onresize = () => {
