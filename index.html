@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="./index.css">
     <!-- 添加以下代碼至網頁中 -->
     <script src="./dist/StyleViewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css" integrity="sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 </head>
 
 <body>
@@ -26,7 +28,7 @@
             <div class="group">
                 <div class="group-title">初始化</div>
                 <div class="group-content">
-                    <code>StyleViewer.init(target);</code>
+                    <pre><code class="language-javascript">StyleViewer.init(target);</code></pre>
                 </div>
             </div>
             <div class="group">
@@ -35,7 +37,7 @@
                     <div class="right-button" onclick="StyleViewer.enterSelectingMode()">點擊進入</div>
                 </div>
                 <div class="group-content">
-                    <code>StyleViewer.enterSelectingMode()</code>
+                    <pre><code class="language-javascript">StyleViewer.enterSelectingMode()</code></pre>
                 </div>
             </div>
             <div class="group">
@@ -44,7 +46,7 @@
                     <div class="right-button" onclick="StyleViewer.exitSelectingMode()">點擊離開</div>
                 </div>
                 <div class="group-content">
-                    <code>StyleViewer.exitSelectingMode()</code>
+                    <pre><code class="language-javascript">StyleViewer.exitSelectingMode()</code></pre>
                 </div>
             </div>
             <div class="group">
@@ -54,7 +56,7 @@
                         的所有樣式</div>
                 </div>
                 <div class="group-content">
-                    <code>StyleViewer.getAllStyle(target)</code>
+                    <pre><code class="language-javascript">StyleViewer.getAllStyle(target)</code></pre>
                     <div class="noselect">所取得的值 :</div>
                     <code id="demo1"><div>無</div></code>
                 </div>
@@ -65,7 +67,7 @@
                     <div class="right-button" id="gsba">點擊取得 Width 以及 Height</div>
                 </div>
                 <div class="group-content">
-                    <code>StyleViewer.getStylesByArray(target, [styles]);</code>
+                    <pre><code class="language-javascript">StyleViewer.getStylesByArray(target, [styles]);</code></pre>
                     <div class="noselect">所取得的值 :</div>
                     <code id="demo2"><div>無</div></code>
                 </div>
@@ -76,7 +78,7 @@
                     <div class="right-button" id="gsbs">點擊取得 Width 以及 Height</div>
                 </div>
                 <div class="group-content">
-                    <code>StyleViewer.getStylesByString(target, styles);</code>
+                    <pre><code class="language-javascript">StyleViewer.getStylesByString(target, styles);</code></pre>
                     <div class="noselect">所取得的值 :</div>
                     <code id="demo3"><div>無</div></code>
                 </div>
@@ -86,6 +88,8 @@
 
     <script>
         window.onload = () => {
+            hljs.initHighlightingOnLoad();
+
             StyleViewer.init(document.body);
 
             document.getElementById("gas").addEventListener("click", function () {
@@ -118,6 +122,7 @@
             })
         }
     </script>
+    <script>hljs.highlightAll();</script>
 </body>
 
 </html>
