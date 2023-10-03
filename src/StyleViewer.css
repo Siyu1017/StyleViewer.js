@@ -35,6 +35,7 @@
 
 .svjs-popup * {
     font-family: monospace;
+    color: #000;
 }
 
 .svjs-popup *::selection {
