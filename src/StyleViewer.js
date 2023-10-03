@@ -213,7 +213,7 @@ import "./lib/box.min.css";
                 elementStyle = element.getAttribute("style").replaceAll(/\/\*[\s\S]*?\*\//gi, "");
             }
         }
-        if (elementStyle !== null && elementStyle.trim() !== "") {
+        if (elementStyle !== null && elementStyle.trim() !== "" && elementStyle.split(":").length > 1) {
             var content = RS[0].content;
             if (elementStyle.split(":")[1].trim() !== "") {
                 if (elementStyle.split(":")[1] && elementStyle.split(";").length == 0) {

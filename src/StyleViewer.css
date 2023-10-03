@@ -64,6 +64,10 @@
     padding: 0 4px;
 }
 
+._css_viewer_info_element * {
+    user-select: none !important;
+}
+
 ._css_viewer_info_element_tag {
     font-weight: 100;
     font-size: 14px;
