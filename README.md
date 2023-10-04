@@ -4,7 +4,7 @@
 ## 使用方式
 ```html
 <!-- 在網頁中加入以下代碼 -->
-<script src="./dist/StyleViewer.min.js"></script>
+<script src="https://siyu1017.github.io/StyleViewer.js/dist/StyleViewer.min.js"></script>
 ```
 
 詳情 : https://siyu1017.github.io/StyleViewer.js/
