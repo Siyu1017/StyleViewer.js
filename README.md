@@ -25,4 +25,3 @@
         at c (StyleViewer.min.js:1:17670)
         at HTMLBodyElement.<anonymous> (StyleViewer.min.js:1:21957)
     ```
-    的錯誤
