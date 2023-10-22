@@ -226,7 +226,7 @@ import "./lib/box.min.css";
                         if (elementStyle.split(";")[i].split(":")[0].trim() !== "" && elementStyle.split(";")[i].split(":")[1].trim() !== "") {
                             content.push({
                                 name: elementStyle.split(";")[i].split(":")[0].trim(),
-                                value: elementStyle.split(";")[i].split(":")[1].trim()
+                                value: elementStyle.split(";")[i].slice(elementStyle.split(";")[i].split(":")[0].length + 1).trim()
                             })
                         }
                     }
@@ -261,8 +261,9 @@ import "./lib/box.min.css";
                             css_arr.forEach(s => {
                                 RS[temp - 1].content.push({
                                     name: s.split(":")[0].trim(),
-                                    value: s.split(":")[1].trim()
+                                    value: s.slice(s.split(":")[0].length + 1).trim()
                                 })
+                                console.log(s, s.split(":")[0], s.split(":")[1])
                                 // CSS_Viewer_color_regex(s.split(":")[1].trim(), e.target)
                             })
                         }
