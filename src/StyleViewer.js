@@ -275,13 +275,15 @@ import "./lib/box.min.css";
         return RS;
     }
 
+    StyleViewer.control = false;
+
     // 初始化
     StyleViewer.init = (target) => {
         if (target !== null) { StyleViewer.target = target; };
         StyleViewer.highlightElement = Element("div", `svjs-${hash.highlight} svjs-highlight-content svjs-highlight`, null, document.body);
         StyleViewer.popupElement = Element("div", `svjs-${hash.popup} svjs-popup`, null, document.body);
         var listens = ["mousemove", "mousedown", "mouseup", "click", "touchmove", "touchstart", "touchend", "touchcancel"];
-        var control = false;
+        /*
         window.addEventListener("keydown", (e) => {
             if (e.altKey) {
                 control = true;
@@ -293,29 +295,34 @@ import "./lib/box.min.css";
                 control = false;
             }
         })
-        window.addEventListener("keypress", (e) => {
+        */
+        window.addEventListener("keydown", (e) => {
             if (e.altKey) {
-                control = true;
-                StyleViewer.popupElement.classList.add("svjs-popup-control");
                 e.preventDefault();
+                if (StyleViewer.control == true) {
+                    StyleViewer.popupElement.classList.remove("svjs-popup-control");
+                    StyleViewer.control = false;
+                } else {
+                    StyleViewer.control = true;
+                    StyleViewer.popupElement.classList.add("svjs-popup-control");
+                }
                 return false;
-            } else {
-                StyleViewer.popupElement.classList.remove("svjs-popup-control");
-                control = false;
             }
         })
+        /*
         window.addEventListener("keyup", (e) => {
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
             control = false;
         })
+        */
         window.addEventListener("blur", () => {
+            if (StyleViewer.control == true) return;
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
-            control = false;
         })
         listens.forEach(l => {
             target.addEventListener(l, (e) => {
                 if (StyleViewer.selecting !== true) return;
-                if (control === true) return;
+                if (StyleViewer.control === true) return;
                 var element = e.target;
                 highlightElement(element);
                 setPopup(e, element);
@@ -328,6 +335,8 @@ import "./lib/box.min.css";
         StyleViewer.popupElement.classList.add("show");
         StyleViewer.highlightElement.classList.add("show");
         StyleViewer.selecting = true;
+        StyleViewer.control = false;
+        StyleViewer.popupElement.classList.remove("svjs-popup-control");
     }
 
     // 結束選擇元素
@@ -335,6 +344,8 @@ import "./lib/box.min.css";
         StyleViewer.popupElement.classList.remove("show");
         StyleViewer.highlightElement.classList.remove("show");
         StyleViewer.selecting = false;
+        StyleViewer.control = false;
+        StyleViewer.popupElement.classList.remove("svjs-popup-control");
     }
 
     // 取得所有樣式

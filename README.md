@@ -9,7 +9,7 @@
 
 詳情 : https://siyu1017.github.io/StyleViewer.js/
 
-💡按下 Alt 即可阻止 Popup 移動
+💡單擊 Alt 以切換 Popup 是否移動
 
 ## 更新內容
 - 色碼判別
