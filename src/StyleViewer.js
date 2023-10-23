@@ -183,7 +183,7 @@ import "./lib/box.min.css";
                 s.content.forEach(j => {
                     temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
                 })
-                a.innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
+                a.innerHTML += `<div class="style-group"><div><span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector}</span> {</div>${temp}<div>}</div></div>`;
             });
         })();
         var b = document.createElement("div");
