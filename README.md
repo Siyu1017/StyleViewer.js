@@ -12,7 +12,7 @@
 💡單擊 Alt 以切換 Popup 是否移動
 
 ## 更新內容
-- Popup 是否移動控制由長按 Alt 改為按下 Alt 切換
+- 加入樣式表來源 URL 或元素
 
 ## 修復內容
-- 當 `attribute` 中含有 `:` 時，會將 `:` 後之文字切斷
+- ClassName 、 Id 、 TagName 中 HTML 字元未轉換問題

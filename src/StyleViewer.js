@@ -210,7 +210,7 @@ import "./lib/box.min.css";
                 s.content.forEach(j => {
                     temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
                 })
-                a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</span><span style="margin-left: 4px;text-align: right;flex:40%;max-width: 40%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><!--a href="${s.url}" style="${s.url == "<style>" ? "color:rgb(137 137 137);" : "color:rgb(137 137 137);text-decoration: underline;"}">${s.url}</a--></span></div>${temp}<div>}</div></div>`;
+                a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</span><span style="margin-left: 4px;text-align: right;flex:40%;max-width: 40%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></span></div>${temp}<div>}</div></div>`;
             });
         })();
         var b = document.createElement("div");
