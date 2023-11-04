@@ -193,3 +193,12 @@
     word-wrap: break-word;
     word-break: break-all;
 }
+
+.style-origin {
+    display: inline;
+    overflow-wrap: break-word;
+}
+
+.style-origin a {
+    text-decoration: underline;
+}

@@ -32,6 +32,10 @@ import "./lib/box.min.css";
         });
     }
 
+    function removeHTMLTag(content) {
+        return content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+
     function is_color(str) {
         return colorCodeRegex.test(str) == true || color_text_regex.test(str.toUpperCase()) == true;
     }
@@ -156,6 +160,26 @@ import "./lib/box.min.css";
         }
     }
 
+    function isElement(obj) {
+        try {
+            return obj instanceof HTMLElement;
+        }
+        catch (e) {
+            return (typeof obj === "object") &&
+                (obj.nodeType === 1) && (typeof obj.style === "object") &&
+                (typeof obj.ownerDocument === "object");
+        }
+    }
+
+    function styleURLTextFormat(org) {
+        if (org.length <= 21) return org;
+        return org.slice(0, 11) + "…" + org.slice(-9)
+    }
+
+    function styleURLFormat(ownerNode) {
+        return isElement(ownerNode) != true ? "" : `<${ownerNode.getAttribute("href") ? "a target='_blank' href='" + ownerNode.getAttribute("href") + "'" : "span"} style='color: rgb(137 137 137);float: right;padding-left: 15px;text-wrap: nowrap;height: 15px;margin-bottom: -1px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;direction: rtl;text-align: left;'>${ownerNode.getAttribute("href") ? styleURLTextFormat(ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1)) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`}</${ownerNode.getAttribute("href") ? "a" : "span"}>`;
+    }
+
     function setPopup(d, e) {
         var roundTo = function (num, decimal) {
             const isNumeric = n => !!Number(n);
@@ -172,6 +196,9 @@ import "./lib/box.min.css";
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
+        className = removeHTMLTag(className);
+        id = removeHTMLTag(id);
+        tag_name = removeHTMLTag(tag_name);
         StyleViewer.popupElement.innerHTML = "";
         (function () {
             var a = document.createElement("div");
@@ -183,7 +210,7 @@ import "./lib/box.min.css";
                 s.content.forEach(j => {
                     temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
                 })
-                a.innerHTML += `<div class="style-group"><div><span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector}</span> {</div>${temp}<div>}</div></div>`;
+                a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</span><span style="margin-left: 4px;text-align: right;flex:40%;max-width: 40%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><!--a href="${s.url}" style="${s.url == "<style>" ? "color:rgb(137 137 137);" : "color:rgb(137 137 137);text-decoration: underline;"}">${s.url}</a--></span></div>${temp}<div>}</div></div>`;
             });
         })();
         var b = document.createElement("div");
@@ -218,15 +245,15 @@ import "./lib/box.min.css";
             if (elementStyle.split(":")[1].trim() !== "") {
                 if (elementStyle.split(":")[1] && elementStyle.split(";").length == 0) {
                     RS[0].content.push({
-                        name: elementStyle.split(":")[0].trim(),
-                        value: elementStyle.split(":")[1].trim()
+                        name: elementStyle.split(":")[0].trim().toString(),
+                        value: elementStyle.split(":")[1].trim().toString()
                     });
                 } else {
                     for (let i = 0; i < elementStyle.split(";").length; i++) {
                         if (elementStyle.split(";")[i].split(":")[0].trim() !== "" && elementStyle.split(";")[i].split(":")[1].trim() !== "") {
                             content.push({
-                                name: elementStyle.split(";")[i].split(":")[0].trim(),
-                                value: elementStyle.split(";")[i].slice(elementStyle.split(";")[i].split(":")[0].length + 1).trim()
+                                name: elementStyle.split(";")[i].split(":")[0].trim().toString(),
+                                value: elementStyle.split(";")[i].slice(elementStyle.split(";")[i].split(":")[0].length + 1).trim().toString()
                             })
                         }
                     }
@@ -241,9 +268,10 @@ import "./lib/box.min.css";
                     Object.values(cssrules).forEach(c => {
                         if (element.matches(c.selectorText)) {
                             var temp = RS.push({
-                                selector: c.selectorText,
+                                selector: c.selectorText.toString(),
                                 url: ownerNode.getAttribute("href") ? ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`,
-                                content: []
+                                content: [],
+                                ownerNode: ownerNode,
                             })
                             var css_content = c.cssText.split("{")[1].slice(0, -1);
                             /*
@@ -260,8 +288,8 @@ import "./lib/box.min.css";
                             css_arr.pop();
                             css_arr.forEach(s => {
                                 RS[temp - 1].content.push({
-                                    name: s.split(":")[0].trim(),
-                                    value: s.slice(s.split(":")[0].length + 1).trim()
+                                    name: s.split(":")[0].trim().toString(),
+                                    value: s.slice(s.split(":")[0].length + 1).trim().toString()
                                 })
                                 // CSS_Viewer_color_regex(s.split(":")[1].trim(), e.target)
                             })
