@@ -20,7 +20,7 @@
     display: none;
     background: #fff;
     max-width: min(260px, 100vw);
-    font-family: monospace;
+    font-family: consolas, "lucida console", "courier new", monospace !important;
     padding: 0 .5rem .5rem;
     border-radius: 4px;
     pointer-events: none;
@@ -34,7 +34,7 @@
 }
 
 .svjs-popup * {
-    font-family: monospace;
+    font-family: consolas, "lucida console", "courier new", monospace !important;
     color: #000;
 }
 
@@ -48,7 +48,7 @@
     color: #000;
     margin-left: 5px;
     line-height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 ._css_viewer_info_height {
@@ -56,7 +56,7 @@
     font-size: 14px;
     color: #000;
     line-height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 ._css_viewer_info_width::after {
@@ -72,7 +72,7 @@
 ._css_viewer_info_element_tag {
     font-weight: 100;
     font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Segoe UI', Tahoma, sans-serif !important;
     font-weight: 700;
     color: #881280;
 }
@@ -81,7 +81,7 @@
 ._css_viewer_info_element_id {
     font-weight: 100;
     font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Segoe UI', Tahoma, sans-serif !important;
     font-weight: 700;
     color: #1a1aa6;
 }
