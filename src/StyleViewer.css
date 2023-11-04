@@ -20,7 +20,7 @@
     display: none;
     background: #fff;
     max-width: min(260px, 100vw);
-    font-family: consolas, "lucida console", "courier new", monospace !important;
+    font-family: monospace !important;
     padding: 0 .5rem .5rem;
     border-radius: 4px;
     pointer-events: none;
@@ -34,7 +34,7 @@
 }
 
 .svjs-popup * {
-    font-family: consolas, "lucida console", "courier new", monospace !important;
+    font-family: monospace !important;
     color: #000;
 }
 
