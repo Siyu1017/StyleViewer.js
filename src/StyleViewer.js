@@ -20,6 +20,7 @@ import "./lib/box.min.css";
         target: document.body,
         selecting: false,
         filters: ["StyleViewer", []],
+        version: "1.0.0"
     };
 
     const colorCodeRegex = /hsla?\(\d{1,3},\s*\d{1,3}%,\s*\d{1,3}%(,\s*0?\.?\d{1,2})?\)|#(?:[0-9a-fA-F]{3}){1,2}|(rgb|hsl)a?\((\d{1,3}%?),\s*(\d{1,3}%?),\s*(\d{1,3}%?)(,\s*0?\.?\d*)?\)/g;
