@@ -11,8 +11,8 @@
 
 💡單擊 Alt 以切換 Popup 是否移動
 
-## 更新內容
+<!-- ## 更新內容
 - 加入樣式表來源 URL 或元素
 
 ## 修復內容
-- ClassName 、 Id 、 TagName 中 HTML 字元未轉換問題
+- ClassName 、 Id 、 TagName 中 HTML 字元未轉換問題 -->
