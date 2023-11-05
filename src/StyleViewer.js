@@ -6,6 +6,7 @@
 
 "use strict";
 
+import "./CSSVariable.js";
 import "./StyleViewer.css";
 import "./lib/box.min.js";
 import "./lib/box.min.css";
@@ -29,7 +30,9 @@ import "./lib/box.min.css";
 
     function replaceCssVars(str, element) {
         return str.replace(/var\((--.*?)\)/g, (match, p1) => {
-            return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}` : match || match;
+            var defined = getComputedStyle(element).getPropertyValue(p1) !== '';
+            console.log(defined)
+            return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color ${defined == true ? "" : "undefined-variable"}'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content ${defined == true ? "" : "undefined-variable"}'></span></span>${match}` : defined == true ? match : `var(<span class="undefined-variable">${p1}</span>)`;
         });
     }
 
@@ -178,7 +181,21 @@ import "./lib/box.min.css";
     }
 
     function styleURLFormat(ownerNode) {
-        return isElement(ownerNode) != true ? "" : `<${ownerNode.getAttribute("href") ? "a target='_blank' href='" + ownerNode.getAttribute("href") + "'" : "span"} style='color: rgb(137 137 137);float: right;padding-left: 15px;text-wrap: nowrap;height: 15px;margin-bottom: -1px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;direction: rtl;text-align: left;'>${ownerNode.getAttribute("href") ? styleURLTextFormat(ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1)) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`}</${ownerNode.getAttribute("href") ? "a" : "span"}>`;
+        return isElement(ownerNode) != true ? "" : `<${ownerNode.getAttribute("href") ? "a target='_blank' href='" + ownerNode.getAttribute("href") + "'" : "span"} style='color: ${ownerNode.getAttribute("href") ? "auto" : "rgb(175 170 170)"};float: right;padding-left: 15px;text-wrap: nowrap;height: 15px;margin-bottom: -1px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;direction: rtl;text-align: left;'>${ownerNode.getAttribute("href") ? styleURLTextFormat(ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1)) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`}</${ownerNode.getAttribute("href") ? "a" : "span"}>`;
+    }
+
+    function selectorFormat(selector, element) {
+        var selectors = selector.split(",");
+        var res = [];
+        selectors.forEach((s, i) => {
+            s = s.trim();
+            if (element.matches(s)) {
+                res.push(s)
+            } else {
+                res.push("<span style='color: rgb(175 170 170);'>" + s + "</span>");
+            }
+        })
+        return res.join("<span style='color: rgb(175 170 170);'>, </span>");
     }
 
     function setPopup(d, e) {
@@ -209,9 +226,10 @@ import "./lib/box.min.css";
             getAllStyle(element).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    temp += `<div style='text-indent: 1rem;font-family: monospace;'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
+                    var valid = validCss(j.name, j.value);
+                    temp += `<div style='text-indent: 1rem;font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
                 })
-                a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</span><span style="margin-left: 4px;text-align: right;flex:40%;max-width: 40%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></span></div>${temp}<div>}</div></div>`;
+                a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span><span style="${s.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${selectorFormat(s.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
             });
         })();
         var b = document.createElement("div");

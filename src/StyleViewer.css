@@ -9,7 +9,8 @@
     background: #6fa8dca8;
 }
 
-.svjs-highlight.show, .svjs-popup.show {
+.svjs-highlight.show,
+.svjs-popup.show {
     display: block;
 }
 
@@ -91,12 +92,17 @@
     right: 0;
     margin: auto 0 auto auto;
     white-space: nowrap;
+    width: fit-content;
+    float: right;
+    text-align: right;
 }
 
 ._css_viewer_info_element_attribute {
     word-break: break-all;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    width: -webkit-fill-available;
 }
 
 ._css_viewer_info_element {
@@ -111,7 +117,9 @@
     z-index: 999;
 }
 
-.style-group + .style-group::before, ._css_viewer_info_element, .svjs-style-content::after {
+.style-group+.style-group::before,
+._css_viewer_info_element,
+.svjs-style-content::after {
     border: solid #c7c7c7;
     border-width: 1px 0 0 0;
     margin: 6px 0;
@@ -125,33 +133,37 @@
     overflow: auto;
 }
 
-.svjs-box > .box {
+.svjs-box>.box {
     margin: 0 auto;
     width: fit-content;
 }
 
-.svjs-popup::-webkit-scrollbar, .svjs-popup *::-webkit-scrollbar {
+.svjs-popup::-webkit-scrollbar,
+.svjs-popup *::-webkit-scrollbar {
     width: 6px;
     height: 6px;
     border-radius: 0px;
     background: none;
 }
 
-.svjs-popup::-webkit-scrollbar-thumb, .svjs-popup *::-webkit-scrollbar-thumb {
+.svjs-popup::-webkit-scrollbar-thumb,
+.svjs-popup *::-webkit-scrollbar-thumb {
     background: rgba(171, 171, 171, 0.5);
     min-height: 50px;
     min-width: 50px;
     border-radius: 10px;
 }
 
-.svjs-popup::-webkit-scrollbar-thumb:hover, .svjs-popup *::-webkit-scrollbar-thumb:hover {
+.svjs-popup::-webkit-scrollbar-thumb:hover,
+.svjs-popup *::-webkit-scrollbar-thumb:hover {
     background: rgba(171, 171, 171, 1);
     min-height: 50px;
     min-width: 50px;
     border-radius: 10px;
 }
 
-.svjs-popup::-webkit-scrollbar-corner, .svjs-popup *::-webkit-scrollbar-corner {
+.svjs-popup::-webkit-scrollbar-corner,
+.svjs-popup *::-webkit-scrollbar-corner {
     background: none;
 }
 
@@ -201,4 +213,8 @@
 
 .style-origin a {
     text-decoration: underline;
+}
+
+.undefined-variable {
+    color: rgb(175 170 170);
 }
