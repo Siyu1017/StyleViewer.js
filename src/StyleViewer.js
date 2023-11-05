@@ -55,13 +55,13 @@ import "./lib/box.min.css";
         }
         return validKey;
     }
-    
+
     function toCamelCase(value) {
         return value.replace(/-(\w)/g, (matched, letter) => {
             return letter.toUpperCase();
         });
     }
-    
+
     function valiateCssValue(key, value) {
         var prefix = ['-o-', '-ms-', '-moz-', '-webkit-', ''];
         var prefixValue = [];
@@ -220,6 +220,15 @@ import "./lib/box.min.css";
         return org.slice(0, 11) + "…" + org.slice(-9)
     }
 
+    function valueURLFormat(value, link = false) {
+        if (link == true) {
+            if (value.length <= 100) return value;
+            return value.slice(0, 50) + "…" + value.slice(-49);
+        }
+        if (value.length <= 100) return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value}</a>`;
+        return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value.slice(0, 50) + "…" + value.slice(-49)}</a>`;
+    }
+
     function styleURLFormat(ownerNode) {
         return isElement(ownerNode) != true ? "" : `<${ownerNode.getAttribute("href") ? "a target='_blank' href='" + ownerNode.getAttribute("href") + "'" : "span"} style='color: ${ownerNode.getAttribute("href") ? "auto" : "rgb(175 170 170)"};float: right;padding-left: 15px;text-wrap: nowrap;height: 15px;margin-bottom: -1px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;direction: rtl;text-align: left;'>${ownerNode.getAttribute("href") ? styleURLTextFormat(ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1)) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`}</${ownerNode.getAttribute("href") ? "a" : "span"}>`;
     }
@@ -266,7 +275,10 @@ import "./lib/box.min.css";
             getAllStyle(element).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    var valid = validateCssKey(j.name) !== '' && valiateCssValue(j.name, j.value) !== '';
+                    var valid = /-(\w)/g.test(j.name) == true ? true : validateCssKey(j.name) !== '' && valiateCssValue(j.name, j.value) !== '';
+                    j.value = j.value.replace(/url\((.*?)\)/gi, (match, p1) => {
+                        return `url(${valueURLFormat(p1, false)})`;
+                    })
                     temp += `<div style='text-indent: 1rem;font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element, !valid)};</div>`
                 })
                 a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span><span style="${s.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${selectorFormat(s.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
@@ -343,12 +355,24 @@ import "./lib/box.min.css";
                                 }
                             }
                             */
-                            var css_arr = css_content.split(";");
+
+                            var replaceTemp = {};
+                            var css_arr = css_content.replace(/url\((.*?)\)/gi, (match, p1) => {
+                                var id = "sv_rd-ts." + new Date().getTime() + "hash." + Hash(96);
+                                replaceTemp[id] = match;
+                                return id;
+                            }).split(";");
                             css_arr.pop();
                             css_arr.forEach(s => {
+                                var val = s.slice(s.split(":")[0].length + 1).trim();
+                                if (/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i.test(val)) {
+                                    val = val.replace(/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i, (match, p1) => {
+                                        return valueURLFormat(replaceTemp[match], true);
+                                    })
+                                }
                                 RS[temp - 1].content.push({
-                                    name: s.split(":")[0].trim().toString(),
-                                    value: s.slice(s.split(":")[0].length + 1).trim().toString()
+                                    name: s.split(":")[0].trim(),
+                                    value: val
                                 })
                                 // CSS_Viewer_color_regex(s.split(":")[1].trim(), e.target)
                             })

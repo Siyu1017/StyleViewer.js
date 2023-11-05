@@ -218,3 +218,8 @@
 .undefined-variable {
     color: rgb(175 170 170);
 }
+
+.style-value-url-link {
+    color: #0068E0;
+    text-decoration: underline;
+}
