@@ -11,8 +11,8 @@
 
 💡單擊 Alt 以切換 Popup 是否移動
 
-<!-- ## 更新內容
-- 加入樣式表來源 URL 或元素
-
-## 修復內容
-- ClassName 、 Id 、 TagName 中 HTML 字元未轉換問題 -->
+## 更新內容
+- 符合的 Selector 高亮
+- 辨別 attribute 受否被瀏覽器支持
+- 辨別 value 是否合法
+- 辨別 variable 是否已定義

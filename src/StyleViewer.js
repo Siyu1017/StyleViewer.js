@@ -6,7 +6,6 @@
 
 "use strict";
 
-import "./CSSVariable.js";
 import "./StyleViewer.css";
 import "./lib/box.min.js";
 import "./lib/box.min.css";
@@ -28,12 +27,53 @@ import "./lib/box.min.css";
 
     const color_text_regex = /^(?:ALICEBLUE|ANTIQUEWHITE|AQUA|AQUAMARINE|AZURE|BEIGE|BISQUE|BLACK|BLANCHEDALMOND|BLUE|BLUEVIOLET|BROWN|BURLYWOOD|CADETBLUE|CHARTREUSE|CHOCOLATE|CORAL|CORNFLOWERBLUE|CORNSILK|CRIMSON|CYAN|DARKBLUE|DARKCYAN|DARKGOLDENROD|DARKGRAY|DARKGREEN|DARKKHAKI|DARKMAGENTA|DARKOLIVEGREEN|DARKORANGE|DARKORCHID|DARKRED|DARKSALMON|DARKSEAGREEN|DARKSLATEBLUE|DARKSLATEGRAY|DARKTURQUOISE|DARKVIOLET|DEEPPINK|DEEPSKYBLUE|DIMGRAY|DODGERBLUE|FLORALWHITE|FORESTGREEN|FUCHSIA|GAINSBORO|GHOSTWHITE|GOLD|GOLDENROD|GRAY|GREEN|GREENYELLOW|HONEYDEW|HOTPINK|INDIANRED|INDIGO|IVORY|KHAKI|LAVENDER|LAVENDERBLUSH|LAWNGREEN|LEMONCHIFFON|LIGHTBLUE|LIGHTCORAL|LIGHTCYAN|LIGHTGOLDENRODYELLOW|LIGHTGRAY|LIGHTGREEN|LIGHTPINK|LIGHTSALMON|LIGHTSEAGREEN|LIGHTSKYBLUE|LIGHTSLATEGRAY|LIGHTSTEELBLUE|LIGHTYELLOW|LIME|LIMEGREEN|LINEN|MAGENTA|MAROON|MEDIUMAQUAMARINE|MEDIUMBLUE|MEDIUMORCHID|MEDIUMPURPLE|MEDIUMSEAGREEN|MEDIUMSLATEBLUE|MEDIUMSPRINGGREEN|MEDIUMTURQUOISE|MEDIUMVIOLETRED|MIDNIGHTBLUE|MINTCREAM|MISTYROSE|MOCCASIN|NAVAJOWHITE|NAVY|OLDLACE|OLIVE|OLIVEDRAB|ORANGE|ORANGERED|ORCHID|PALEGOLDENROD|PALEGREEN|PALETURQUOISE|PALEVIOLETRED|PAPAYAWHIP|PEACHPUFF|PERU|PINK|PLUM|POWDERBLUE|PURPLE|REBECCAPURPLE|RED|ROSYBROWN|ROYALBLUE|SADDLEBROWN|SALMON|SANDYBROWN|SEAGREEN|SEASHELL|SIENNA|SILVER|SKYBLUE|SLATEBLUE|SLATEGRAY|SNOW|SPRINGGREEN|STEELBLUE|TAN|TEAL|THISTLE|TOMATO|TURQUOISE|VIOLET|WHEAT|WHITE|WHITESMOKE|YELLOW|YELLOWGREEN)$/gi;
 
-    function replaceCssVars(str, element) {
+    function replaceCssVars(str, element, unsupported) {
         return str.replace(/var\((--.*?)\)/g, (match, p1) => {
-            var defined = getComputedStyle(element).getPropertyValue(p1) !== '';
-            console.log(defined)
+            var defined = unsupported == true ? true : getComputedStyle(element).getPropertyValue(p1) !== '';
             return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color ${defined == true ? "" : "undefined-variable"}'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content ${defined == true ? "" : "undefined-variable"}'></span></span>${match}` : defined == true ? match : `var(<span class="undefined-variable">${p1}</span>)`;
         });
+    }
+
+    function validateCssKey(key) {
+        const jsKey = toCamelCase(key);
+        if (jsKey in document.documentElement.style) {
+            return key;
+        }
+        let validKey = '';
+        const prefixMap = {
+            Webkit: '-webkit-',
+            Moz: '-moz-',
+            ms: '-ms-',
+            O: '-o-'
+        };
+        for (const jsPrefix in prefixMap) {
+            const styleKey = toCamelCase(`${jsPrefix}-${jsKey}`);
+            if (styleKey in document.documentElement.style) {
+                validKey = prefixMap[jsPrefix] + key;
+                break;
+            }
+        }
+        return validKey;
+    }
+    
+    function toCamelCase(value) {
+        return value.replace(/-(\w)/g, (matched, letter) => {
+            return letter.toUpperCase();
+        });
+    }
+    
+    function valiateCssValue(key, value) {
+        var prefix = ['-o-', '-ms-', '-moz-', '-webkit-', ''];
+        var prefixValue = [];
+        for (var i = 0; i < prefix.length; i++) {
+            prefixValue.push(prefix[i] + value)
+        }
+        var element = document.createElement('div');
+        var eleStyle = element.style;
+        for (var j = 0; j < prefixValue.length; j++) {
+            eleStyle[key] = prefixValue[j];
+        }
+        return eleStyle[key];
     }
 
     function removeHTMLTag(content) {
@@ -44,7 +84,7 @@ import "./lib/box.min.css";
         return colorCodeRegex.test(str) == true || color_text_regex.test(str.toUpperCase()) == true;
     }
 
-    function Color_regex(str, element) {
+    function Color_regex(str, element, unsupported) {
         var matches = str.replace(colorCodeRegex, match => {
             return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
         });
@@ -54,7 +94,7 @@ import "./lib/box.min.css";
 
         })
 
-        matches = replaceCssVars(matches, element);
+        matches = replaceCssVars(matches, element, unsupported);
 
         return matches ? matches : str;
     }
@@ -226,8 +266,8 @@ import "./lib/box.min.css";
             getAllStyle(element).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    var valid = validCss(j.name, j.value);
-                    temp += `<div style='text-indent: 1rem;font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element)};</div>`
+                    var valid = validateCssKey(j.name) !== '' && valiateCssValue(j.name, j.value) !== '';
+                    temp += `<div style='text-indent: 1rem;font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element, !valid)};</div>`
                 })
                 a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span><span style="${s.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${selectorFormat(s.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
             });
