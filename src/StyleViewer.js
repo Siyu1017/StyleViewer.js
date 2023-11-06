@@ -1,7 +1,7 @@
 /**
  * Code by Wetrain (c) 2023
  * All rights reserved.
- * StyleViewer.js v1.1.0
+ * StyleViewer.js
  */
 
 "use strict";
@@ -9,6 +9,11 @@
 import "./StyleViewer.css";
 import "./lib/box.min.js";
 import "./lib/box.min.css";
+import ElementStyle from "./components/css/elementstyle.js";
+import StyleSheets from "./components/css/stylesheets.js";
+import { styleURLFormat, valueURLFormat, styleURLTextFormat, selectorFormat, replaceCSSVars, Color_regex, toCamelCase, removeHTMLTag } from "./components/format/format.js";
+import isValidCSSKey from "./components/verifier/isValidCSSKey.js";
+import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 
 (() => {
     const hash = {
@@ -22,82 +27,6 @@ import "./lib/box.min.css";
         filters: ["StyleViewer", []],
         version: "1.0.0"
     };
-
-    const colorCodeRegex = /hsla?\(\d{1,3},\s*\d{1,3}%,\s*\d{1,3}%(,\s*0?\.?\d{1,2})?\)|#(?:[0-9a-fA-F]{3}){1,2}|(rgb|hsl)a?\((\d{1,3}%?),\s*(\d{1,3}%?),\s*(\d{1,3}%?)(,\s*0?\.?\d*)?\)/g;
-
-    const color_text_regex = /^(?:ALICEBLUE|ANTIQUEWHITE|AQUA|AQUAMARINE|AZURE|BEIGE|BISQUE|BLACK|BLANCHEDALMOND|BLUE|BLUEVIOLET|BROWN|BURLYWOOD|CADETBLUE|CHARTREUSE|CHOCOLATE|CORAL|CORNFLOWERBLUE|CORNSILK|CRIMSON|CYAN|DARKBLUE|DARKCYAN|DARKGOLDENROD|DARKGRAY|DARKGREEN|DARKKHAKI|DARKMAGENTA|DARKOLIVEGREEN|DARKORANGE|DARKORCHID|DARKRED|DARKSALMON|DARKSEAGREEN|DARKSLATEBLUE|DARKSLATEGRAY|DARKTURQUOISE|DARKVIOLET|DEEPPINK|DEEPSKYBLUE|DIMGRAY|DODGERBLUE|FLORALWHITE|FORESTGREEN|FUCHSIA|GAINSBORO|GHOSTWHITE|GOLD|GOLDENROD|GRAY|GREEN|GREENYELLOW|HONEYDEW|HOTPINK|INDIANRED|INDIGO|IVORY|KHAKI|LAVENDER|LAVENDERBLUSH|LAWNGREEN|LEMONCHIFFON|LIGHTBLUE|LIGHTCORAL|LIGHTCYAN|LIGHTGOLDENRODYELLOW|LIGHTGRAY|LIGHTGREEN|LIGHTPINK|LIGHTSALMON|LIGHTSEAGREEN|LIGHTSKYBLUE|LIGHTSLATEGRAY|LIGHTSTEELBLUE|LIGHTYELLOW|LIME|LIMEGREEN|LINEN|MAGENTA|MAROON|MEDIUMAQUAMARINE|MEDIUMBLUE|MEDIUMORCHID|MEDIUMPURPLE|MEDIUMSEAGREEN|MEDIUMSLATEBLUE|MEDIUMSPRINGGREEN|MEDIUMTURQUOISE|MEDIUMVIOLETRED|MIDNIGHTBLUE|MINTCREAM|MISTYROSE|MOCCASIN|NAVAJOWHITE|NAVY|OLDLACE|OLIVE|OLIVEDRAB|ORANGE|ORANGERED|ORCHID|PALEGOLDENROD|PALEGREEN|PALETURQUOISE|PALEVIOLETRED|PAPAYAWHIP|PEACHPUFF|PERU|PINK|PLUM|POWDERBLUE|PURPLE|REBECCAPURPLE|RED|ROSYBROWN|ROYALBLUE|SADDLEBROWN|SALMON|SANDYBROWN|SEAGREEN|SEASHELL|SIENNA|SILVER|SKYBLUE|SLATEBLUE|SLATEGRAY|SNOW|SPRINGGREEN|STEELBLUE|TAN|TEAL|THISTLE|TOMATO|TURQUOISE|VIOLET|WHEAT|WHITE|WHITESMOKE|YELLOW|YELLOWGREEN)$/gi;
-
-    function replaceCssVars(str, element, unsupported) {
-        return str.replace(/var\((--.*?)\)/g, (match, p1) => {
-            var defined = unsupported == true ? true : getComputedStyle(element).getPropertyValue(p1) !== '';
-            return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color ${defined == true ? "" : "undefined-variable"}'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content ${defined == true ? "" : "undefined-variable"}'></span></span>${match}` : defined == true ? match : `var(<span class="undefined-variable">${p1}</span>)`;
-        });
-    }
-
-    function validateCssKey(key) {
-        const jsKey = toCamelCase(key);
-        if (jsKey in document.documentElement.style) {
-            return key;
-        }
-        let validKey = '';
-        const prefixMap = {
-            Webkit: '-webkit-',
-            Moz: '-moz-',
-            ms: '-ms-',
-            O: '-o-'
-        };
-        for (const jsPrefix in prefixMap) {
-            const styleKey = toCamelCase(`${jsPrefix}-${jsKey}`);
-            if (styleKey in document.documentElement.style) {
-                validKey = prefixMap[jsPrefix] + key;
-                break;
-            }
-        }
-        return validKey;
-    }
-
-    function toCamelCase(value) {
-        return value.replace(/-(\w)/g, (matched, letter) => {
-            return letter.toUpperCase();
-        });
-    }
-
-    function valiateCssValue(key, value) {
-        var prefix = ['-o-', '-ms-', '-moz-', '-webkit-', ''];
-        var prefixValue = [];
-        for (var i = 0; i < prefix.length; i++) {
-            prefixValue.push(prefix[i] + value)
-        }
-        var element = document.createElement('div');
-        var eleStyle = element.style;
-        for (var j = 0; j < prefixValue.length; j++) {
-            eleStyle[key] = prefixValue[j];
-        }
-        return eleStyle[key];
-    }
-
-    function removeHTMLTag(content) {
-        return content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-
-    function is_color(str) {
-        return colorCodeRegex.test(str) == true || color_text_regex.test(str.toUpperCase()) == true;
-    }
-
-    function Color_regex(str, element, unsupported) {
-        var matches = str.replace(colorCodeRegex, match => {
-            return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
-        });
-
-        matches = matches.replace(color_text_regex, match => {
-            return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
-
-        })
-
-        matches = replaceCssVars(matches, element, unsupported);
-
-        return matches ? matches : str;
-    }
 
     function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
 
@@ -204,49 +133,6 @@ import "./lib/box.min.css";
         }
     }
 
-    function isElement(obj) {
-        try {
-            return obj instanceof HTMLElement;
-        }
-        catch (e) {
-            return (typeof obj === "object") &&
-                (obj.nodeType === 1) && (typeof obj.style === "object") &&
-                (typeof obj.ownerDocument === "object");
-        }
-    }
-
-    function styleURLTextFormat(org) {
-        if (org.length <= 21) return org;
-        return org.slice(0, 11) + "…" + org.slice(-9)
-    }
-
-    function valueURLFormat(value, link = false) {
-        if (link == true) {
-            if (value.length <= 100) return value;
-            return value.slice(0, 50) + "…" + value.slice(-49);
-        }
-        if (value.length <= 100) return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value}</a>`;
-        return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value.slice(0, 50) + "…" + value.slice(-49)}</a>`;
-    }
-
-    function styleURLFormat(ownerNode) {
-        return isElement(ownerNode) != true ? "" : `<${ownerNode.getAttribute("href") ? "a target='_blank' href='" + ownerNode.getAttribute("href") + "'" : "span"} style='color: ${ownerNode.getAttribute("href") ? "auto" : "rgb(175 170 170)"};float: right;padding-left: 15px;text-wrap: nowrap;height: 15px;margin-bottom: -1px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;direction: rtl;text-align: left;'>${ownerNode.getAttribute("href") ? styleURLTextFormat(ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1)) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`}</${ownerNode.getAttribute("href") ? "a" : "span"}>`;
-    }
-
-    function selectorFormat(selector, element) {
-        var selectors = selector.split(",");
-        var res = [];
-        selectors.forEach((s, i) => {
-            s = s.trim();
-            if (element.matches(s)) {
-                res.push(s)
-            } else {
-                res.push("<span style='color: rgb(175 170 170);'>" + s + "</span>");
-            }
-        })
-        return res.join("<span style='color: rgb(175 170 170);'>, </span>");
-    }
-
     function setPopup(d, e) {
         var roundTo = function (num, decimal) {
             const isNumeric = n => !!Number(n);
@@ -272,10 +158,11 @@ import "./lib/box.min.css";
             a.className = "svjs-style-content";
             StyleViewer.popupElement.appendChild(a);
             a.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
-            getAllStyle(element).forEach(s => {
+            /*getAllStyle(element)*/
+            ElementStyle(element).concat(StyleSheets(element)).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    var valid = /-(\w)/g.test(j.name) == true ? true : validateCssKey(j.name) !== '' && valiateCssValue(j.name, j.value) !== '';
+                    var valid = /-(\w)/g.test(j.name) == true ? true : isValidCSSKey(j.name) !== '' && isValidCSSValue(j.name, j.value) !== '';
                     j.value = j.value.replace(/url\((.*?)\)/gi, (match, p1) => {
                         return `url(${valueURLFormat(p1, false)})`;
                     })
@@ -297,95 +184,6 @@ import "./lib/box.min.css";
         var b; if ((b = (a.ownerDocument || document).defaultView) && b.getComputedStyle) return c = c.replace(/([A-Z])/g, "-$1").toLowerCase(), b.getComputedStyle(a, null).getPropertyValue(c); if (a.currentStyle) return c = c.replace(/\-(\w)/g, function (d, e) { return e.toUpperCase() }), b = a.currentStyle[c], /^\d+(em|pt|%|ex)?$/i.test(b) ? function (d) { var e = a.style.left, f = a.runtimeStyle.left; a.runtimeStyle.left = a.currentStyle.left; a.style.left = d || 0; d = a.style.pixelLeft + "px"; a.style.left = e; a.runtimeStyle.left = f; return d; }(b) : b;
     };
 
-    const getAllStyle = (element) => {
-        var RS = [
-            {
-                selector: "element.style",
-                url: "",
-                content: []
-            }
-        ];
-        var elementStyle = element.getAttribute("style");
-        if (element.getAttribute("style") != null && element.getAttribute("style") != "") {
-            if (element.getAttribute("style").trim().length > 0) {
-                elementStyle = element.getAttribute("style").replaceAll(/\/\*[\s\S]*?\*\//gi, "");
-            }
-        }
-        if (elementStyle !== null && elementStyle.trim() !== "" && elementStyle.split(":").length > 1) {
-            var content = RS[0].content;
-            if (elementStyle.split(":")[1].trim() !== "") {
-                if (elementStyle.split(":")[1] && elementStyle.split(";").length == 0) {
-                    RS[0].content.push({
-                        name: elementStyle.split(":")[0].trim().toString(),
-                        value: elementStyle.split(":")[1].trim().toString()
-                    });
-                } else {
-                    for (let i = 0; i < elementStyle.split(";").length; i++) {
-                        if (elementStyle.split(";")[i].split(":")[0].trim() !== "" && elementStyle.split(";")[i].split(":")[1].trim() !== "") {
-                            content.push({
-                                name: elementStyle.split(";")[i].split(":")[0].trim().toString(),
-                                value: elementStyle.split(";")[i].slice(elementStyle.split(";")[i].split(":")[0].length + 1).trim().toString()
-                            })
-                        }
-                    }
-                }
-            }
-        }
-        if (location.href.split("://")[0] != "file") {
-            for (var i = 0; i < document.styleSheets.length; i++) {
-                try {
-                    var ownerNode = document.styleSheets[i].ownerNode;
-                    var cssrules = document.styleSheets[i].cssRules;
-                    Object.values(cssrules).forEach(c => {
-                        if (element.matches(c.selectorText)) {
-                            var temp = RS.push({
-                                selector: c.selectorText.toString(),
-                                url: ownerNode.getAttribute("href") ? ownerNode.getAttribute("href").substring(ownerNode.getAttribute("href").lastIndexOf('/') + 1) : `&lt;${ownerNode.nodeName.toLowerCase()}&gt;`,
-                                content: [],
-                                ownerNode: ownerNode,
-                            })
-                            var css_content = c.cssText.split("{")[1].slice(0, -1);
-                            /*
-                            for (let j = 0; j < css_content.split(";").length; j++) {
-                                if (css_content.split(";")[i].split(":")[0].trim() !== "" && css_content.split(";")[i].split(":")[1].trim() !== "") {
-                                    RS[temp - 1].content.push({
-                                        name: css_content.split(";")[i].split(":")[0].trim(),
-                                        value: css_content.split(";")[i].split(":")[1].trim()
-                                    })
-                                }
-                            }
-                            */
-
-                            var replaceTemp = {};
-                            var css_arr = css_content.replace(/url\((.*?)\)/gi, (match, p1) => {
-                                var id = "sv_rd-ts." + new Date().getTime() + "hash." + Hash(96);
-                                replaceTemp[id] = match;
-                                return id;
-                            }).split(";");
-                            css_arr.pop();
-                            css_arr.forEach(s => {
-                                var val = s.slice(s.split(":")[0].length + 1).trim();
-                                if (/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i.test(val)) {
-                                    val = val.replace(/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i, (match, p1) => {
-                                        return valueURLFormat(replaceTemp[match], true);
-                                    })
-                                }
-                                RS[temp - 1].content.push({
-                                    name: s.split(":")[0].trim(),
-                                    value: val
-                                })
-                                // CSS_Viewer_color_regex(s.split(":")[1].trim(), e.target)
-                            })
-                        }
-                    })
-                } catch (e) {
-                    console.warn("Warn : Uncaught exception.\nDetails :", e);
-                };
-            }
-        }
-        return RS;
-    }
-
     StyleViewer.control = false;
 
     // 初始化
@@ -394,19 +192,6 @@ import "./lib/box.min.css";
         StyleViewer.highlightElement = Element("div", `svjs-${hash.highlight} svjs-highlight-content svjs-highlight`, null, document.body);
         StyleViewer.popupElement = Element("div", `svjs-${hash.popup} svjs-popup`, null, document.body);
         var listens = ["mousemove", "mousedown", "mouseup", "click", "touchmove", "touchstart", "touchend", "touchcancel"];
-        /*
-        window.addEventListener("keydown", (e) => {
-            if (e.altKey) {
-                control = true;
-                StyleViewer.popupElement.classList.add("svjs-popup-control");
-                e.preventDefault();
-                return false;
-            } else {
-                StyleViewer.popupElement.classList.remove("svjs-popup-control");
-                control = false;
-            }
-        })
-        */
         window.addEventListener("keydown", (e) => {
             if (e.altKey) {
                 e.preventDefault();
@@ -461,7 +246,7 @@ import "./lib/box.min.css";
 
     // 取得所有樣式
     StyleViewer.getAllStyle = (target) => {
-        return getAllStyle(target);
+        return ElementStyle(target).concat(StyleSheets(target));
     }
 
     // 取得陣列中的樣式
