@@ -16,6 +16,7 @@ import isValidCSSKey from "./components/verifier/isValidCSSKey.js";
 import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 
 (() => {
+    var initial = false;
     const hash = {
         highlight: Hash(24, "ABCDEFGHIJKLMNOPQRSTUVWXYZ_-_abcdefghijklmnopqrstuvwxyz"),
         popup: Hash(24, "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPasdfghj2644200123456789"),
@@ -189,6 +190,8 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
     // 初始化
     StyleViewer.init = (target) => {
         if (target !== null) { StyleViewer.target = target; };
+        if (initial == true) return console.error("The initialization function [ init ] can only be called once.");
+        initial = true;
         StyleViewer.highlightElement = Element("div", `svjs-${hash.highlight} svjs-highlight-content svjs-highlight`, null, document.body);
         StyleViewer.popupElement = Element("div", `svjs-${hash.popup} svjs-popup`, null, document.body);
         var listens = ["mousemove", "mousedown", "mouseup", "click", "touchmove", "touchstart", "touchend", "touchcancel"];
@@ -277,22 +280,22 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 /************************* 未完成 *************************/
 /****/    // 禁止 StyleViewer 對字串中的選擇器作用
 /****/    StyleViewer.filterByString = (selectors) => {
-        /****/
-        /****/
-    }
+/****/
+/****/
+/****/    }
 /****/
 /****/    // 禁止 StyleViewer 對陣列中的選擇器作用
 /****/    StyleViewer.filterByArray = (selectors) => {
-        /****/
-        /****/
-    }
+/****/
+/****/
+/****/    }
 /****/
 /****/    // 刪除過濾器
 /****/    StyleViewer.removeFilter = (filters) => {
-        /****/
-        /****/
-    }
-    /**********************************************************/
+/****/
+/****/
+/****/    }
+/**********************************************************/
 
     window.onresize = () => {
         StyleViewer.highlightElement.style.width = 0 + "px";
