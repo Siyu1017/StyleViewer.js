@@ -46,12 +46,11 @@ function replaceCSSVars(str, element, unsupported) {
 
 function Color_regex(str, element, unsupported) {
     var matches = str.replace(colorCodeRegex, match => {
-        return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
+        return `<span><span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}</span>`;
     });
 
     matches = matches.replace(color_text_regex, match => {
-        return `<span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}`;
-
+        return `<span><span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}</span>`;
     })
 
     matches = replaceCSSVars(matches, element, unsupported);

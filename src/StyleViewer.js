@@ -16,6 +16,9 @@ import isValidCSSKey from "./components/verifier/isValidCSSKey.js";
 import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 
 (() => {
+    var $ = (s, a) => {
+        return a == true ? document.querySelectorAll(s) : document.querySelector(s);
+    };
     var initial = false;
     const hash = {
         highlight: Hash(24, "ABCDEFGHIJKLMNOPQRSTUVWXYZ_-_abcdefghijklmnopqrstuvwxyz"),
@@ -158,7 +161,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             var a = document.createElement("div");
             a.className = "svjs-style-content";
             StyleViewer.popupElement.appendChild(a);
-            a.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
+            a.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute" data-sv-cm="es"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
             /*getAllStyle(element)*/
             ElementStyle(element).concat(StyleSheets(element)).forEach(s => {
                 var temp = "";
@@ -280,22 +283,25 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 /************************* 未完成 *************************/
 /****/    // 禁止 StyleViewer 對字串中的選擇器作用
 /****/    StyleViewer.filterByString = (selectors) => {
-/****/
-/****/
-/****/    }
+        /****/
+        /****/
+        /****/
+}
 /****/
 /****/    // 禁止 StyleViewer 對陣列中的選擇器作用
 /****/    StyleViewer.filterByArray = (selectors) => {
-/****/
-/****/
-/****/    }
+        /****/
+        /****/
+        /****/
+}
 /****/
 /****/    // 刪除過濾器
 /****/    StyleViewer.removeFilter = (filters) => {
-/****/
-/****/
-/****/    }
-/**********************************************************/
+        /****/
+        /****/
+        /****/
+}
+    /**********************************************************/
 
     window.onresize = () => {
         StyleViewer.highlightElement.style.width = 0 + "px";
