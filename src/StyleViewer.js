@@ -157,10 +157,12 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         id = removeHTMLTag(id);
         tag_name = removeHTMLTag(tag_name);
         StyleViewer.popupElement.innerHTML = "";
+        var mask = document.createElement("div");
+        mask.style = "all: initial;";
         (function () {
             var a = document.createElement("div");
             a.className = "svjs-style-content";
-            StyleViewer.popupElement.appendChild(a);
+            mask.appendChild(a);
             a.innerHTML = `<div class="_css_viewer_info_element"><span class="_css_viewer_info_element_attribute" data-sv-cm="es"><span class="_css_viewer_info_element_tag">${tag_name}</span><span class="_css_viewer_info_element_id">${id}</span><span class="_css_viewer_info_element_classname">${className}</span></span><span class="_css_viewer_info_element_size"><span class="_css_viewer_info_width">${Math.round(size.width * 100) / 100}</span><span class="_css_viewer_info_height">${Math.round(size.height * 100) / 100}</span></span></div>`;
             /*getAllStyle(element)*/
             ElementStyle(element).concat(StyleSheets(element)).forEach(s => {
@@ -177,8 +179,9 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         })();
         var b = document.createElement("div");
         b.className = "svjs-box";
-        StyleViewer.popupElement.appendChild(b);
+        mask.appendChild(b);
         box(element, b).draw();
+        StyleViewer.popupElement.appendChild(mask);
         var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
         StyleViewer.popupElement.style.left = pos.x + "px";
         StyleViewer.popupElement.style.top = pos.y + "px";
@@ -286,21 +289,21 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         /****/
         /****/
         /****/
-}
+    }
 /****/
 /****/    // 禁止 StyleViewer 對陣列中的選擇器作用
 /****/    StyleViewer.filterByArray = (selectors) => {
         /****/
         /****/
         /****/
-}
+    }
 /****/
 /****/    // 刪除過濾器
 /****/    StyleViewer.removeFilter = (filters) => {
         /****/
         /****/
         /****/
-}
+    }
     /**********************************************************/
 
     window.onresize = () => {
