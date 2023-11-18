@@ -168,7 +168,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             ElementStyle(element).concat(StyleSheets(element)).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    var valid = /-(\w)/g.test(j.name) == true ? true : isValidCSSKey(j.name) !== '' && isValidCSSValue(j.name, j.value) !== '';
+                    var valid = /-(\w)/g.test(j.name) == true ? true : isValidCSSKey(j.name) !== '' && isValidCSSValue(j.name, j.value.replaceAll("!important", "")) !== '';
                     j.value = j.value.replace(/url\((.*?)\)/gi, (match, p1) => {
                         return `url(${valueURLFormat(p1, false)})`;
                     })
