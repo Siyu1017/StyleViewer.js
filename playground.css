@@ -42,6 +42,13 @@ a {
     position: absolute;
     top: 72px;
     width: 100%;
+    overflow: auto;
+}
+
+.input {
+    height: fit-content;
+    position: sticky;
+    top: 0;
 }
 
 .plllllllllllllllllllllllll {
@@ -61,7 +68,8 @@ a {
     height: fit-content;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 986px) {
+
     .input,
     .output {
         width: 100%;
@@ -73,6 +81,10 @@ a {
 
     .title {
         padding-top: 0 !important;
+    }
+
+    .input {
+        position: static;
     }
 }
 
@@ -87,7 +99,8 @@ a {
     font-family: consolas, "lucida console", "courier new", monospace;
 }
 
-.p-code::selection,.p-code *::selection {
+.p-code::selection,
+.p-code *::selection {
     background: rgba(177, 217, 255, 0.8);
 }
 
@@ -116,12 +129,8 @@ code * {
     align-items: center;
 }
 
-.input > *:first-child {
+.input>*:first-child {
     margin-top: 2rem;
-}
-
-.input {
-    height: fit-content;
 }
 
 .output {
