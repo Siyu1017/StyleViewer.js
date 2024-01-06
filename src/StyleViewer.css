@@ -221,3 +221,27 @@
     color: #0068E0;
     text-decoration: underline;
 }
+
+.style-line-unsupported::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    mask-image: url("data:image/svg+xml,%3Csvg width=%2720%27 height=%2720%27 fill=%27none%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cpath fill-rule=%27evenodd%27 clip-rule=%27evenodd%27 d=%27m1 17 9-15 9 15H1ZM11 7v5H9V7h2Zm-1 8.1a1.1 1.1 0 1 0 0-2.2 1.1 1.1 0 0 0 0 2.2Z%27 fill=%27%23000%27/%3E%3C/svg%3E");
+    mask-position: center center;
+    mask-repeat: no-repeat;
+    mask-size: 99%;
+    background-color: rgb(232, 110, 48);
+    display: inline-block;
+    text-wrap: nowrap;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0px;
+    min-height: 0px;
+    margin-right: 3px;
+    margin-bottom: -3px;
+}
+
+.defined-variable {
+    color: rgb(11, 87, 208);
+}

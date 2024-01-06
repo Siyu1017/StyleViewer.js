@@ -5,8 +5,6 @@
 
 "use strict";
 
-import { valueURLFormat } from "../format/format";
-
 function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
 
 export default function ElementStyle(element) {
@@ -39,7 +37,7 @@ export default function ElementStyle(element) {
                     var val = elementStyle.split(":")[1].trim();
                     if (url_substitute_regexp.test(val)) {
                         val = val.replace(url_substitute_regexp, (match, p1) => {
-                            return valueURLFormat(replaceTemp[match], true);
+                            return replaceTemp[match];
                         })
                     }
                     res[0].content.push({
@@ -52,7 +50,7 @@ export default function ElementStyle(element) {
                             var val = elementStyle.split(";")[i].slice(elementStyle.split(";")[i].split(":")[0].length + 1).trim();
                             if (url_substitute_regexp.test(val)) {
                                 val = val.replace(url_substitute_regexp, (match, p1) => {
-                                    return valueURLFormat(replaceTemp[match], true);
+                                    return replaceTemp[match]
                                 })
                             }
                             content.push({

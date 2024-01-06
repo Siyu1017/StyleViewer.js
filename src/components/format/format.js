@@ -15,6 +15,9 @@ function valueURLFormat(value, link = false) {
         if (value.length <= 100) return value;
         return value.slice(0, 50) + "…" + value.slice(-49);
     }
+    value = value.replace(/\".+\"/gi, (match, p1) => {
+        return match.replace(/\"?\"/gi, '');
+    });
     if (value.length <= 100) return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value}</a>`;
     return `<a href="${value.toString()}" target="_blank" class="style-value-url-link">${value.slice(0, 50) + "…" + value.slice(-49)}</a>`;
 }
@@ -38,18 +41,27 @@ function selectorFormat(selector, element) {
 }
 
 function replaceCSSVars(str, element, unsupported) {
-    return str.replace(/var\((--.*?)\)/g, (match, p1) => {
-        var defined = unsupported == true ? true : getComputedStyle(element).getPropertyValue(p1) !== '';
-        return is_color(getComputedStyle(element).getPropertyValue(p1)) == true ? `<span class='_css_editor_info_stylesheets_content_styles_color ${defined == true ? "" : "undefined-variable"}'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content ${defined == true ? "" : "undefined-variable"}'></span></span>${match}` : defined == true ? match : `var(<span class="undefined-variable">${p1}</span>)`;
+    return str.replaceAll(/var\((--.*?)\)/g, (match, p1) => {
+        if (unsupported == true) {
+            return match;
+        }
+        var defined = unsupported == true ? false : getComputedStyle(element).getPropertyValue(p1) !== '';
+        if (defined == false) {
+            return `var(<span class="undefined-variable">${p1}</span>)`;
+        } else if (is_color(getComputedStyle(element).getPropertyValue(p1)) == true) {
+            return `<span class='_css_editor_info_stylesheets_content_styles_color defined-variable'><span style='background: ${getComputedStyle(element).getPropertyValue(p1)}' class='_css_editor_info_stylesheets_content_styles_color_content defined-variable'></span></span>var(<span class="defined-variable">${p1}</span>)`;
+        } else {
+            return `var(<span class="defined-variable">${p1}</span>)`;
+        }
     });
 }
 
 function Color_regex(str, element, unsupported) {
-    var matches = str.replace(colorCodeRegex, match => {
+    var matches = str.replaceAll(colorCodeRegex, match => {
         return `<span><span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}</span>`;
     });
 
-    matches = matches.replace(color_text_regex, match => {
+    matches = matches.replaceAll(color_text_regex, match => {
         return `<span><span class='_css_editor_info_stylesheets_content_styles_color'><span style='background: ${match}' class='_css_editor_info_stylesheets_content_styles_color_content'></span></span>${match}</span>`;
     })
 

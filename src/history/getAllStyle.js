@@ -68,7 +68,7 @@ const getAllStyle = (element) => {
                             var val = s.slice(s.split(":")[0].length + 1).trim();
                             if (/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i.test(val)) {
                                 val = val.replace(/sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i, (match, p1) => {
-                                    return valueURLFormat(replaceTemp[match], true);
+                                    return replaceTemp[match]
                                 })
                             }
                             RS[temp - 1].content.push({

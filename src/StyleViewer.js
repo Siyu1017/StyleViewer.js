@@ -137,6 +137,21 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         }
     }
 
+    function checkCssSupport(property, value) {
+        return CSS.supports(property, value);
+    }
+
+    function getMatchedCssRule(element, attribute) {
+        const rules = Array.from(document.styleSheets).flatMap(sheet => Array.from(sheet.cssRules));
+        const matchedRules = rules.filter(rule => {
+            if (rule.style && rule.style.getPropertyValue(attribute)) {
+                return element.matches(rule.selectorText);
+            }
+            return false;
+        });
+        return matchedRules.sort((a, b) => b.style.getPropertyPriority(attribute) - a.style.getPropertyPriority(attribute))[0];
+    }
+
     function setPopup(d, e) {
         var roundTo = function (num, decimal) {
             const isNumeric = n => !!Number(n);
@@ -168,11 +183,13 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             ElementStyle(element).concat(StyleSheets(element)).forEach(s => {
                 var temp = "";
                 s.content.forEach(j => {
-                    var valid = /-(\w)/g.test(j.name) == true ? true : isValidCSSKey(j.name) !== '' && isValidCSSValue(j.name, j.value.replaceAll("!important", "")) !== '';
-                    j.value = j.value.replace(/url\((.*?)\)/gi, (match, p1) => {
+                    var valid = /\-\-\w+/gi.test(j.name) ? true : isValidCSSKey(j.name) !== '' && isValidCSSValue(j.name, j.value.replaceAll("!important", "")) !== '';
+                    var invalid_class = checkCssSupport(j.name, j.value.replaceAll("!important", "")) || /\-\-\w+/gi.test(j.name) ? "" : "style-line-unsupported";
+                    // var applied = getMatchedCssRule(element, j.name) ? getMatchedCssRule(element, j.name).style.getPropertyValue(j.name) == j.value : false;
+                    j.value = j.value.replaceAll(/url\((.*?)\)/gi, (match, p1) => {
                         return `url(${valueURLFormat(p1, false)})`;
-                    })
-                    temp += `<div style='text-indent: 1rem;font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;'>${j.name}</span>: ${Color_regex(j.value, element, !valid)};</div>`
+                    });
+                    temp += `<div style='text-indent: ${invalid_class != "" ? "0" : "1rem"};font-family: monospace;${valid == false ? "text-decoration: line-through;" : ""}'><span style='text-indent: 1rem;color: #c80000; font-family: monospace;' class='${invalid_class}'>${j.name}</span>: ${Color_regex(j.value, element, !valid)};</div>`
                 })
                 a.innerHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(s.ownerNode)}<span><span style="${s.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${selectorFormat(s.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
             });
