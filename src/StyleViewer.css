@@ -22,16 +22,12 @@
     background: #fff;
     max-width: min(260px, 100vw);
     font-family: monospace !important;
-    padding: 0 .5rem .5rem;
+    padding: 0 .5rem 0;
     border-radius: 4px;
     pointer-events: none;
     box-shadow: rgba(99, 99, 99, 0.2) 1px 3px 3px 0px;
     max-height: min(320px, 100vh);
     overflow: auto;
-}
-
-.svjs-popup-control {
-    pointer-events: all;
 }
 
 .svjs-popup * {
@@ -244,4 +240,35 @@
 
 .defined-variable {
     color: rgb(11, 87, 208);
+}
+
+.svjs-status {
+    position: sticky;
+    bottom: 0;
+    padding: 8px 0;
+    background: #fff;
+    border: solid #c7c7c7;
+    border-width: 1px 0 0 0;
+    margin: 6px 0 0;
+    content: '';
+    display: block;
+}
+
+.svjs-popup * {
+    pointer-events: none;
+    user-select: none;
+}
+
+.svjs-popup.svjs-popup-control * {
+    pointer-events: all;
+    user-select: text;
+}
+
+.svjs-popup.svjs-popup-control {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 16px 0px;
+    pointer-events: all;
+}
+
+.svjs-popup .box * {
+    user-select: none !important;
 }

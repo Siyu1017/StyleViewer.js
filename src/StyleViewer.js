@@ -174,6 +174,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         StyleViewer.popupElement.innerHTML = "";
         var mask = document.createElement("div");
         mask.style = "all: initial;";
+        mask.className = "sjvs-mask";
         (function () {
             var a = document.createElement("div");
             a.className = "svjs-style-content";
@@ -199,6 +200,10 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         mask.appendChild(b);
         box(element, b).draw();
         StyleViewer.popupElement.appendChild(mask);
+        var status = document.createElement("div");
+        status.className = "svjs-status";
+        status.innerHTML = "Status : " + (StyleViewer.control == true ? "Fixed" : "Selecting");
+        mask.appendChild(status);
         var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
         StyleViewer.popupElement.style.left = pos.x + "px";
         StyleViewer.popupElement.style.top = pos.y + "px";
@@ -209,6 +214,8 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
     };
 
     StyleViewer.control = false;
+
+    StyleViewer.selectedElement = null;
 
     // 初始化
     StyleViewer.init = (target) => {
@@ -228,6 +235,9 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
                     StyleViewer.control = true;
                     StyleViewer.popupElement.classList.add("svjs-popup-control");
                 }
+                if ($(".svjs-status")) {
+                    $(".svjs-status").innerHTML = "Status : " + (StyleViewer.control == true ? "Fixed" : "Selecting");
+                }
                 return false;
             }
         })
@@ -245,6 +255,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             target.addEventListener(l, (e) => {
                 if (StyleViewer.selecting !== true) return;
                 if (StyleViewer.control === true) return;
+                StyleViewer.selectedElement = e.target;
                 var element = e.target;
                 highlightElement(element);
                 setPopup(e, element);
