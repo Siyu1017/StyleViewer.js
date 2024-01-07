@@ -36,7 +36,7 @@
 }
 
 .svjs-popup *::selection {
-    background: rgba(177, 217, 255, 0.8);
+    background: rgb(211 227 253);
     color: unset;
 }
 
