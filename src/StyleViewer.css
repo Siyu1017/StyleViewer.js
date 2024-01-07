@@ -37,6 +37,7 @@
 
 .svjs-popup *::selection {
     background: rgba(177, 217, 255, 0.8);
+    color: unset;
 }
 
 ._css_viewer_info_width {
@@ -134,31 +135,39 @@
 
 .svjs-popup::-webkit-scrollbar,
 .svjs-popup *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    border-radius: 0px;
-    background: none;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 0px !important;
+    background: none !important;
 }
 
 .svjs-popup::-webkit-scrollbar-thumb,
 .svjs-popup *::-webkit-scrollbar-thumb {
-    background: rgba(171, 171, 171, 0.5);
-    min-height: 50px;
-    min-width: 50px;
-    border-radius: 10px;
+    background: rgba(171, 171, 171, 0.5) !important;
+    min-height: 50px !important;
+    min-width: 50px !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
 }
 
 .svjs-popup::-webkit-scrollbar-thumb:hover,
 .svjs-popup *::-webkit-scrollbar-thumb:hover {
-    background: rgba(171, 171, 171, 1);
-    min-height: 50px;
-    min-width: 50px;
-    border-radius: 10px;
+    background: rgba(171, 171, 171, 1) !important;
+    min-height: 50px !important;
+    min-width: 50px !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
 }
 
 .svjs-popup::-webkit-scrollbar-corner,
 .svjs-popup *::-webkit-scrollbar-corner {
-    background: none;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+.svjs-popup::-webkit-scrollbar-track,
+.svjs-popup *::-webkit-scrollbar-track {
+    background: none !important;
 }
 
 ._css_editor_info_stylesheets_content_styles_color {
