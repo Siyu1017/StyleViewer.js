@@ -47,30 +47,6 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         return target.appendChild(element);
     }
 
-    function popupWorker(x, y, e) {
-        var res = {
-            x: x,
-            y: y
-        }
-        if (x + e.offsetWidth > document.documentElement.scrollWidth) {
-            if (x - e.offsetWidth < 0) {
-                res.x = document.documentElement.scrollWidth - e.offsetWidth;
-            } else {
-                res.x = x - e.offsetWidth;
-            }
-        }
-        if (y + e.offsetHeight > document.documentElement.scrollHeight || y + e.offsetHeight > window.innerHeight) {
-            if (y - document.documentElement.scrollTop < 0) {
-                res.y = document.documentElement.scrollTop;
-            } else if (y - e.offsetHeight < document.documentElement.scrollTop) {
-                res.y = document.documentElement.scrollTop;
-            } else {
-                res.y = y - e.offsetHeight;
-            }
-        }
-        return res;
-    }
-
     function getPosition(element) {
         function offset(el) {
             var rect = el.getBoundingClientRect(),
@@ -105,8 +81,8 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 
         StyleViewer.highlightElement.style.width = size.width + "px";
         StyleViewer.highlightElement.style.height = size.height + "px";
-        StyleViewer.highlightElement.style.top = position.y + "px";
-        StyleViewer.highlightElement.style.left = position.x + "px";
+        StyleViewer.highlightElement.style.top = position.y - scrollY + "px";
+        StyleViewer.highlightElement.style.left = position.x - screenX + "px";
 
         const fillWorker = (e, w, h) => {
             var t = e.top,
@@ -150,6 +126,28 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             return false;
         });
         return matchedRules.sort((a, b) => b.style.getPropertyPriority(attribute) - a.style.getPropertyPriority(attribute))[0];
+    }
+
+    function popupWorker(x, y, e) {
+        var res = {
+            x: x,
+            y: y
+        }
+        if (x + e.offsetWidth > window.innerWidth) {
+            if (x - e.offsetWidth < 0) {
+                res.x = window.innerWidth - e.offsetWidth;
+            } else {
+                res.x = x - e.offsetWidth;
+            }
+        }
+        if (y + e.offsetHeight > window.innerHeight) {
+            if (y - e.offsetHeight < 0) {
+                res.y = window.innerHeight - e.offsetHeight;
+            } else {
+                res.y = y - e.offsetHeight;
+            }
+        }
+        return res;
     }
 
     function setPopup(d, e) {
@@ -204,7 +202,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         status.className = "svjs-status";
         status.innerHTML = "Status : " + (StyleViewer.control == true ? "Fixed" : "Selecting");
         mask.appendChild(status);
-        var pos = popupWorker(detail.pageX, detail.pageY, StyleViewer.popupElement);
+        var pos = popupWorker(StyleViewer.mousePosition.x, StyleViewer.mousePosition.y, StyleViewer.popupElement);
         StyleViewer.popupElement.style.left = pos.x + "px";
         StyleViewer.popupElement.style.top = pos.y + "px";
     }
@@ -216,6 +214,13 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
     StyleViewer.control = false;
 
     StyleViewer.selectedElement = null;
+
+    StyleViewer.temp = null;
+
+    StyleViewer.mousePosition = {
+        x: 0,
+        y: 0
+    }
 
     // 初始化
     StyleViewer.init = (target) => {
@@ -241,6 +246,16 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
                 return false;
             }
         })
+
+        window.addEventListener("scroll", () => {
+            if (!StyleViewer.selectedElement || !StyleViewer.temp) return;
+            var element = StyleViewer.selectedElement;
+            var e = StyleViewer.temp;
+            highlightElement(element);
+            var pos = popupWorker(StyleViewer.mousePosition.x, StyleViewer.mousePosition.y, StyleViewer.popupElement);
+            StyleViewer.popupElement.style.left = pos.x + "px";
+            StyleViewer.popupElement.style.top = pos.y + "px";
+        })
         /*
         window.addEventListener("keyup", (e) => {
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
@@ -256,6 +271,11 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
                 if (StyleViewer.selecting !== true) return;
                 if (StyleViewer.control === true) return;
                 StyleViewer.selectedElement = e.target;
+                StyleViewer.temp = e;
+                StyleViewer.mousePosition = {
+                    x: e.clientX,
+                    y: e.clientY
+                }
                 var element = e.target;
                 highlightElement(element);
                 setPopup(e, element);

@@ -1,7 +1,7 @@
 .svjs-highlight {
     z-index: 99999999;
     pointer-events: none !important;
-    position: absolute;
+    position: fixed;
     display: none;
 }
 
@@ -17,7 +17,7 @@
 .svjs-popup {
     color: #000;
     z-index: 99999999;
-    position: absolute;
+    position: fixed;
     display: none;
     background: #fff;
     max-width: min(260px, 100vw);
