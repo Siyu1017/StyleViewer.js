@@ -14,6 +14,7 @@ import StyleSheets from "./components/css/stylesheets.js";
 import { styleURLFormat, valueURLFormat, styleURLTextFormat, selectorFormat, replaceCSSVars, Color_regex, toCamelCase, removeHTMLTag } from "./components/format/format.js";
 import isValidCSSKey from "./components/verifier/isValidCSSKey.js";
 import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
+import isElement from "./components/verifier/isElement";
 
 (() => {
     var $ = (s, a) => {
@@ -26,7 +27,6 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
     }
 
     const StyleViewer = {
-        target: document.body,
         selecting: false,
         filters: ["StyleViewer", []],
         version: "1.0.0"
@@ -159,10 +159,15 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         var detail = d;
         var element = e;
 
-        var size = {
-            width: element.getClientRects()[0].width,
-            height: element.getClientRects()[0].height
-        }
+        var size = {};
+
+        try {
+            size = {
+                width: element.getClientRects()[0].width,
+                height: element.getClientRects()[0].height
+            }
+        } catch (e) { }
+
         var tag_name = detail.target.nodeName.toLowerCase();
         var className = detail.target.getAttribute("class") === "" || detail.target.getAttribute("class") === null || tag_name == "path" ? "" : "." + detail.target.getAttribute("class").replaceAll(" ", ".");
         var id = detail.target.getAttribute("id") != null ? "#" + detail.target.getAttribute("id") : "";
@@ -223,8 +228,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
     }
 
     // 初始化
-    StyleViewer.init = (target) => {
-        if (target !== null) { StyleViewer.target = target; };
+    StyleViewer.init = () => {
         if (initial == true) return console.error("The initialization function [ init ] can only be called once.");
         initial = true;
         StyleViewer.highlightElement = Element("div", `svjs-${hash.highlight} svjs-highlight-content svjs-highlight`, null, document.body);
@@ -256,6 +260,16 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             StyleViewer.popupElement.style.left = pos.x + "px";
             StyleViewer.popupElement.style.top = pos.y + "px";
         })
+
+        window.onresize = () => {
+            if (!StyleViewer.selectedElement || !StyleViewer.temp) return;
+            var element = StyleViewer.selectedElement;
+            var e = StyleViewer.temp;
+            highlightElement(element);
+            setPopup(e, element);
+        }
+
+
         /*
         window.addEventListener("keyup", (e) => {
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
@@ -267,7 +281,7 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
             StyleViewer.popupElement.classList.remove("svjs-popup-control");
         })
         listens.forEach(l => {
-            target.addEventListener(l, (e) => {
+            window.addEventListener(l, (e) => {
                 if (StyleViewer.selecting !== true) return;
                 if (StyleViewer.control === true) return;
                 StyleViewer.selectedElement = e.target;
@@ -280,6 +294,26 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
                 highlightElement(element);
                 setPopup(e, element);
             })
+        })
+
+        var observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target == StyleViewer.popupElement || StyleViewer.popupElement.contains(mutation.target) || mutation.target == StyleViewer.highlightElement || mutation.target != StyleViewer.selectedElement) return;
+                if (mutation.type === 'attributes') {
+                    if (!StyleViewer.selectedElement || !StyleViewer.temp) return;
+                    var element = StyleViewer.selectedElement;
+                    var e = StyleViewer.temp;
+                    if (!isElement(element)) return;
+                    highlightElement(element);
+                    setPopup(e, element);
+                }
+            })
+        })
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            childList: true,
+            subtree: true,
         })
     }
 
@@ -353,13 +387,6 @@ import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
         /****/
     }
     /**********************************************************/
-
-    window.onresize = () => {
-        StyleViewer.highlightElement.style.width = 0 + "px";
-        StyleViewer.highlightElement.style.height = 0 + "px";
-        StyleViewer.highlightElement.style.top = 0 + "px";
-        StyleViewer.highlightElement.style.left = 0 + "px";
-    }
 
     window.StyleViewer = StyleViewer;
 })()
