@@ -1,0 +1,32 @@
+{
+  "name": "styleviewer",
+  "version": "1.0.0",
+  "description": "用於查看網頁中元素樣式的 JavaScript 庫",
+  "main": "webpack.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Siyu1017/StyleViewer.js.git"
+  },
+  "author": "Siyu1017",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Siyu1017/StyleViewer.js/issues"
+  },
+  "homepage": "https://github.com/Siyu1017/StyleViewer.js#readme",
+  "dependencies": {
+    "tippy.js": "^6.3.7",
+    "webpack": "^5.88.2"
+  },
+  "scripts": {
+    "watch": "webpack --mode development --watch",
+    "start": "webpack --mode development",
+    "build": "npm i\nwebpack --mode production"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "terser-webpack-plugin": "^5.3.9",
+    "webpack-cli": "^5.1.4"
+  }
+}

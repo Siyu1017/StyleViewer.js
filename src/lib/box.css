@@ -1,0 +1,87 @@
+/**
+ * Box.css
+ */
+
+.box {
+    padding: 3px;
+}
+
+.box-content {
+    color: #333;
+    border: 1px gray solid;
+    min-width: 100px;
+    background: rgba(111, 168, 220, .66)
+}
+
+.box-padding {
+    color: #333;
+    border: 1px gray dashed;
+    background: rgba(147, 196, 125, .55)
+}
+
+.box-border {
+    color: #333;
+    border: 1px #000 solid;
+    background: rgba(255, 229, 153, .66)
+}
+
+.box-margin {
+    color: #333;
+    border: 1px dashed;
+    background: rgba(246, 178, 107, .66)
+}
+
+.box-position {
+    border: 1px gray dotted
+}
+
+.box-border,
+.box-content,
+.box-margin,
+.box-padding,
+.box-position {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-size: 12px;
+    white-space: nowrap
+}
+
+.box-label {
+    position: absolute;
+    margin-left: 3px;
+    padding: 1px 2px 0;
+}
+
+.box * {
+    box-sizing: content-box;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.box-top,
+.box-left,
+.box-right,
+.box-bottom {
+    display: inline-block
+}
+
+.box-left,
+.box-right {
+    vertical-align: middle;
+    padding: 0 3px;
+}
+
+.box-top,
+.box-bottom {
+    padding: 2px 0;
+}
+
+.box-content {
+    padding: 2px;
+}

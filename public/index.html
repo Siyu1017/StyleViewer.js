@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - StyleViewer.js</title>
+    <link rel="stylesheet" href="./index.css">
+    <!-- 添加以下代碼至網頁中 -->
+    <script src="./dist/StyleViewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css" integrity="sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+
+<body>
+    <div class="nav" style="undefined: var(--undefined-variable); defined: var(--defined-variable); ">
+        <a href="https://siyu1017.github.io/StyleViewer.js/" class="headerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr">StyleViewer.js</a>
+        <a class="plllllllllllllllllllllllll" href="playground.html">
+            <div class="playground">
+                Playground
+            </div>
+        </a>
+    </div>
+    <div class="tip" id="tip">💡 單擊 <keyboard>Alt</keyboard> 以切換 Popup 是否移動 <div class="close" id="close"></div></div>
+    <div class="content">
+        <div class="usage">
+            <div class="title">使用方法</div>
+            <div class="group">
+                <div class="group-title">初始化</div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.init(target);</code></pre>
+                </div>
+            </div>
+            <div class="group">
+                <div class="group-title">
+                    <span>進入樣式檢視模式</span>
+                    <div class="right-button" onclick="StyleViewer.enterSelectingMode()">點擊進入</div>
+                </div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.enterSelectingMode();</code></pre>
+                </div>
+            </div>
+            <div class="group">
+                <div class="group-title">
+                    <span>離開樣式檢視模式</span>
+                    <div class="right-button" onclick="StyleViewer.exitSelectingMode()">點擊離開</div>
+                </div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.exitSelectingMode();</code></pre>
+                </div>
+            </div>
+            <div class="group">
+                <div class="group-title">
+                    <span>取得所有樣式</span>
+                    <div class="right-button" id="gas">點擊取得 <span style="font-family: monospace;">&lt;body&gt;</span>
+                        的所有樣式</div>
+                </div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.getAllStyle(target);</code></pre>
+                    <div class="noselect">所取得的值 :</div>
+                    <code id="demo1"><div>無</div></code>
+                </div>
+            </div>
+            <div class="group">
+                <div class="group-title">
+                    <span>取得陣列中的樣式</span>
+                    <div class="right-button" id="gsba">點擊取得 Width 以及 Height</div>
+                </div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.getStylesByArray(target, [styles]);</code></pre>
+                    <div class="noselect">所取得的值 :</div>
+                    <code id="demo2"><div>無</div></code>
+                </div>
+            </div>
+            <div class="group">
+                <div class="group-title">
+                    <span>取得字串中的樣式 ( 以空格分開 )</span>
+                    <div class="right-button" id="gsbs">點擊取得 Width 以及 Height</div>
+                </div>
+                <div class="group-content">
+                    <pre><code class="language-javascript">StyleViewer.getStylesByString(target, styles);</code></pre>
+                    <div class="noselect">所取得的值 :</div>
+                    <code id="demo3"><div>無</div></code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            hljs.initHighlightingOnLoad();
+
+            StyleViewer.init(document.body);
+
+            document.getElementById("gas").addEventListener("click", function () {
+                document.getElementById('demo1').innerHTML = '';
+                StyleViewer.getAllStyle(document.body).forEach(s => {
+                    var temp = "";
+                    s.content.forEach(j => {
+                        temp += `<div style='text-indent: 1rem;'><span style='text-indent: 1rem;color: #c80000;'>${j.name}</span>: ${j.value};</div>`
+                    })
+                    document.getElementById('demo1').innerHTML += `<div class="style-group"><div style="${s.selector == "element.style" ? "color: rgb(137 137 137);" : ""}">${s.selector} {</div>${temp}<div>}</div></div>`;
+                });
+            })
+
+            document.getElementById("gsba").addEventListener("click", function () {
+                document.getElementById('demo2').innerHTML = ''
+                StyleViewer.getStylesByArray(document.body, ['width', 'height']).forEach(s => {
+                    document.getElementById('demo2').innerHTML += `<div><span style='color: #c80000; '>${s.name}</span>: ${s.value};</div>`;
+                })
+            })
+
+            document.getElementById("gsbs").addEventListener("click", function () {
+                document.getElementById('demo3').innerHTML = '';
+                StyleViewer.getStylesByString(document.body, 'width height').forEach(s => {
+                    document.getElementById('demo3').innerHTML += `<div><span style='color: #c80000; '>${s.name}</span>: ${s.value};</div>`;
+                })
+            })
+
+            document.getElementById("close").addEventListener("click", () => {
+                document.getElementById("tip").remove();
+            })
+        }
+    </script>
+    <script>hljs.highlightAll();</script>
+</body>
+
+</html>
