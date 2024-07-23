@@ -14,13 +14,19 @@ import boxModel from './lib/box.js';
 import "./lib/box.css";
 import ElementStyle from "./components/css/elementstyle.js";
 import StyleSheets from "./components/css/stylesheets.js";
-import { styleURLFormat, valueURLFormat, styleURLTextFormat, selectorFormat, replaceCSSVars, Color_regex, toCamelCase, removeHTMLTag } from "./components/format/format.js";
 import isValidCSSKey from "./components/verifier/isValidCSSKey.js";
 import isValidCSSValue from "./components/verifier/isValidCSSValue.js";
 import isElement from "./components/verifier/isElement";
-import { getAllCSSComponentsWithBrackets } from "./components/format/format.js";
+import removeHTMLTag from './components/formatters/removeHTMLTag.js';
+import parseBrackets from './components/parsers/parseBrackets.js';
+import formatStyleURL from './components/formatters/formatStyleURL.js';
+import generateColorBlock from './components/formatters/generateColorBlock.js';
+import formatSelector from './components/formatters/formatSelector.js';
+import formatLongURL from './components/formatters/formatLongURL.js';
 
 import { diff, clean, parseHTML } from "./test.js";
+
+import pkg from "../package.json";
 
 (() => {
     var $ = (s, a) => {
@@ -35,7 +41,7 @@ import { diff, clean, parseHTML } from "./test.js";
     const StyleViewer = {
         selecting: false,
         filters: ["StyleViewer", []],
-        version: "1.0.0"
+        version: pkg.version
     };
 
     function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
@@ -88,7 +94,7 @@ import { diff, clean, parseHTML } from "./test.js";
         StyleViewer.highlightElement.style.width = size.width + "px";
         StyleViewer.highlightElement.style.height = size.height + "px";
         StyleViewer.highlightElement.style.top = position.y - scrollY + "px";
-        StyleViewer.highlightElement.style.left = position.x - screenX + "px";
+        StyleViewer.highlightElement.style.left = position.x - scrollX + "px";
 
         const fillWorker = (e, w, h) => {
             var t = e.top,
@@ -206,7 +212,7 @@ import { diff, clean, parseHTML } from "./test.js";
                     var randomTag = Hash(12);
                     var replacedURL = {};
 
-                    var brackets = getAllCSSComponentsWithBrackets(j.value);
+                    var brackets = parseBrackets(j.value);
 
                     if (Object.keys(brackets).length > 0) {
                         // console.log(brackets);
@@ -217,14 +223,14 @@ import { diff, clean, parseHTML } from "./test.js";
 
                     j.value = j.value.replaceAll(/url\((.*?)\)/gi, (match, p1) => {
                         var id = Hash(8);
-                        replacedURL[id] = `url(${valueURLFormat(p1, false)})`;
+                        replacedURL[id] = `url(${formatLongURL(p1, false)})`;
                         return `${randomTag}-${id}-replaced`;
                     });
 
                     var result = j.value;
                     
                     if (valid.key == true && valid.value == true) {
-                        result = Color_regex(j.value, element);
+                        result = generateColorBlock(j.value, element);
                     }
 
                     Object.values(replacedURL).forEach((url, i) => {
@@ -236,7 +242,7 @@ import { diff, clean, parseHTML } from "./test.js";
                         <span class='svjs-stylesheet-key ${classNames.key}'>${j.name}</span>: <span class='svjs-stylesheet-value ${classNames.value}'>${result}</span>;
                     </div>`;
                 })
-                tempHTML += `<div class="style-group"><div class="style-origin">${styleURLFormat(style.ownerNode)}<span><span style="${style.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${selectorFormat(style.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
+                tempHTML += `<div class="style-group"><div class="style-origin">${formatStyleURL(style.ownerNode)}<span><span style="${style.selector == "element.style" ? "color: rgb(175 170 170);" : ""}">${formatSelector(style.selector, element)}</span><span> {</span></span></div>${temp}<div>}</div></div>`;
             });
         })();
 

@@ -5,7 +5,7 @@
 
 "use strict";
 
-import { getAllCSSComponentsWithBrackets } from "../format/format.js";
+import parseBrackets from "../parsers/parseBrackets.js";
 
 function Hash(n, c) { var c = c || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', r = '', l = c.length; for (let i = 0; i < n; i++) { r += c.charAt(Math.floor(Math.random() * l)); } return r; };
 
@@ -19,8 +19,6 @@ export default function ElementStyle(element) {
     ];
 
     const brackets_substitute_regexp = /sv_rd-ts\.[0-9]{13}hash\.[A-Za-z0-9]{96}/i;
-    // const brackets_regexp = /\((.*?)\)/gi;
-    const brackets_regexp = /url\([\s\S]*?\)+/gi;
 
     try {
         var elementStyle = element.getAttribute("style");
@@ -34,7 +32,7 @@ export default function ElementStyle(element) {
         }
 
         // 替換括號內容
-        var brackets = getAllCSSComponentsWithBrackets(elementStyle);
+        var brackets = parseBrackets(elementStyle);
 
         Object.keys(brackets).forEach((start, i) => {
             var id = "sv_rd-ts." + new Date().getTime() + "hash." + Hash(96);

@@ -1,6 +1,6 @@
 {
   "name": "styleviewer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "用於查看網頁中元素樣式的 JavaScript 庫",
   "main": "webpack.config.js",
   "repository": {

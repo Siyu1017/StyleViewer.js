@@ -11,5 +11,5 @@
 
 💡單擊 Alt 以切換 Popup 是否移動
 
-## v1.0.0 版本特徵
-- 第一次推送
+## v1.1.0 版本特徵
+- 修復 scrollX 誤植為 screenX (at: [StyleViewer.js:97](https://github.com/Siyu1017/StyleViewer.js/blob/961f9a77742eb9865e41f1b22a08e94d274ec686/src/StyleViewer.js#L97))

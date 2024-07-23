@@ -1,4 +1,4 @@
-import { toCamelCase } from "../format/format";
+import toCamelCase from "../formatters/toCamelCase.js";
 
 export default function isValidCSSKey(key) {
     const jsKey = toCamelCase(key);
